@@ -1,4 +1,4 @@
-# dnd-14th-7-backend
+# daejin-capston-hub-be
 
 ### Branch Strategy
 > - main / develop 브랜치 기본 생성
