@@ -64,5 +64,5 @@ jobs:
             source .env
             set +a
             
-            sudo SPRING_PROFILES_ACTIVE=prod nohup java -jar capstone.jar > ./output.log 2>&1 &
+            SPRING_PROFILES_ACTIVE=prod nohup java -jar capstone.jar > ./output.log 2>&1 &
             rm -rf /home/ubuntu/capstone/tobe
