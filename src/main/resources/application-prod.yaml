@@ -1,6 +1,5 @@
 spring:
   config:
-    import: optional:file:.env[.properties]
     activate:
       on-profile: prod
   datasource:
@@ -8,7 +7,6 @@ spring:
     url: ${DB_PROD_URL}
     username: ${DB_PROD_USERNAME}
     password: ${DB_PROD_PASSWORD}
-
   jpa:
     hibernate:
       ddl-auto: update
