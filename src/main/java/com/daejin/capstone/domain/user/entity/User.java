@@ -1,5 +1,6 @@
-package com.daejin.capstone.doamin.user.entity;
+package com.daejin.capstone.domain.user.entity;
 
+import com.daejin.capstone.domain.bookmark.entity.Bookmark;
 import com.daejin.capstone.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,6 +9,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -35,6 +39,9 @@ public class User extends BaseEntity {
 
   @Column(length = 255)
   private String email;
+
+  @OneToMany(mappedBy = "user")
+  private List<Bookmark> bookmarks = new ArrayList<>();
 
   @Builder
   private User(Long id, UUID uuid, String stdNum, UserRole role, String name, String email) {

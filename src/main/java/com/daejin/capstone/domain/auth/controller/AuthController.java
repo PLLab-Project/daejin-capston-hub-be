@@ -1,4 +1,4 @@
-package com.daejin.capstone.doamin.auth.controller;
+package com.daejin.capstone.domain.auth.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 

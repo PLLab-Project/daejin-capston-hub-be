@@ -1,4 +1,4 @@
-package com.daejin.capstone.doamin.auth.entity;
+package com.daejin.capstone.domain.auth.entity;
 
 import com.daejin.capstone.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -13,7 +13,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.context.annotation.Configuration;
 
 @Entity
 @Getter
