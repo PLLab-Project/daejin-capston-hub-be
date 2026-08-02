@@ -1,6 +1,7 @@
 package com.daejin.capstone.domain.user.entity;
 
 import com.daejin.capstone.domain.bookmark.entity.Bookmark;
+import com.daejin.capstone.domain.project.entity.Project;
 import com.daejin.capstone.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,6 +43,9 @@ public class User extends BaseEntity {
 
   @OneToMany(mappedBy = "user")
   private List<Bookmark> bookmarks = new ArrayList<>();
+
+  @OneToMany(mappedBy = "user")
+  private List<Project> projects = new ArrayList<>();
 
   @Builder
   private User(Long id, UUID uuid, String stdNum, UserRole role, String name, String email) {
