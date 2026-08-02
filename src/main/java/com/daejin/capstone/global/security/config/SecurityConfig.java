@@ -1,7 +1,8 @@
-package com.daejin.capstone.global.security;
+package com.daejin.capstone.global.security.config;
 
 import com.daejin.capstone.global.common.response.ResponseDTO;
 import com.daejin.capstone.global.exception.ErrorCode;
+import com.daejin.capstone.global.security.jwt.JwtTokenFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -18,7 +20,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http, ObjectMapper objectMapper) throws Exception {
+  public SecurityFilterChain securityFilterChain(HttpSecurity http, ObjectMapper objectMapper,
+      JwtTokenFilter jwtTokenFilter) throws Exception {
 
     // 인증 실패 시 응답 객체
     String invalidAuthenticationResponse = objectMapper
@@ -60,6 +63,9 @@ public class SecurityConfig {
               response.getWriter().write(invalidAuthorizationResponse);
             }));
 
+    //jwt 필터추가
+    http
+        .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
 

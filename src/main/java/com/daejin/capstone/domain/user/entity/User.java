@@ -14,7 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +27,7 @@ public class User extends BaseEntity {
   private Long id;
 
   @Column(length = 255)
-  private UUID uuid;
+  private String uuid;
 
   @Column(length = 255)
   private String stdNum;
@@ -52,7 +51,7 @@ public class User extends BaseEntity {
   private List<Notice> notices = new ArrayList<>();
 
   @Builder
-  private User(Long id, UUID uuid, String stdNum, UserRole role, String name, String email) {
+  private User(Long id, String uuid, String stdNum, UserRole role, String name, String email) {
     this.id = id;
     this.uuid = uuid;
     this.stdNum = stdNum;
@@ -61,7 +60,7 @@ public class User extends BaseEntity {
     this.email = email;
   }
 
-  public static User createMember(UUID uuid, String stdNum, String name, String email) {
+  public static User createMember(String uuid, String stdNum, String name, String email) {
 
     return User.builder()
         .id(null)
@@ -69,11 +68,11 @@ public class User extends BaseEntity {
         .stdNum(stdNum)
         .name(name)
         .email(email)
-        .role(UserRole.member)
+        .role(UserRole.MEMBER)
         .build();
   }
 
-  public static User createGuest(UUID uuid, String stdNum, String name, String email) {
+  public static User createGuest(String uuid, String stdNum, String name, String email) {
 
     return User.builder()
         .id(null)
@@ -81,11 +80,11 @@ public class User extends BaseEntity {
         .stdNum(stdNum)
         .name(name)
         .email(email)
-        .role(UserRole.guest)
+        .role(UserRole.GUEST)
         .build();
   }
 
-  public static User createProf(UUID uuid, String stdNum, String name, String email) {
+  public static User createProf(String uuid, String stdNum, String name, String email) {
 
     return User.builder()
         .id(null)
@@ -93,7 +92,7 @@ public class User extends BaseEntity {
         .stdNum(stdNum)
         .name(name)
         .email(email)
-        .role(UserRole.prof)
+        .role(UserRole.PROF)
         .build();
   }
 
