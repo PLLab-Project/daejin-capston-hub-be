@@ -2,6 +2,7 @@ package com.daejin.capstone.domain.project.entity;
 
 import com.daejin.capstone.domain.bookmark.entity.Bookmark;
 import com.daejin.capstone.domain.category.entity.Category;
+import com.daejin.capstone.domain.techstack.entity.TechStack;
 import com.daejin.capstone.domain.user.entity.User;
 import jakarta.persistence.Access;
 import jakarta.persistence.Column;
@@ -14,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -42,6 +44,10 @@ public class Project  {
 
   @Column(length = 255)
   private String demoVideoUrl;
+
+
+  @OneToMany(mappedBy = "project")
+  private List<TechStack> techStacks = new ArrayList<>();
 
   @Builder
   private Project(Long id, User user, Category category, String title,
