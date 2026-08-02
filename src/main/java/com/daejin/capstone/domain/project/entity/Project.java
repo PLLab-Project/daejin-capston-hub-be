@@ -2,6 +2,7 @@ package com.daejin.capstone.domain.project.entity;
 
 import com.daejin.capstone.domain.bookmark.entity.Bookmark;
 import com.daejin.capstone.domain.category.entity.Category;
+import com.daejin.capstone.domain.file.entity.File;
 import com.daejin.capstone.domain.techstack.entity.TechStack;
 import com.daejin.capstone.domain.user.entity.User;
 import jakarta.persistence.Access;
@@ -48,6 +49,9 @@ public class Project  {
 
   @OneToMany(mappedBy = "project")
   private List<TechStack> techStacks = new ArrayList<>();
+
+  @OneToMany(mappedBy = "project")
+  private List<File> files = new ArrayList<>();
 
   @Builder
   private Project(Long id, User user, Category category, String title,
