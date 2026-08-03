@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,6 +17,54 @@ import org.springframework.context.annotation.Configuration;
 )
 @Configuration
 public class SwaggerConfig {
+
+  @Bean
+  public GroupedOpenApi authApi() {
+    return GroupedOpenApi.builder()
+        .group("🔐 로그인")
+        .pathsToMatch("/auth/login")
+        .build();
+  }
+
+  @Bean
+  public GroupedOpenApi homeApi() {
+    return GroupedOpenApi.builder()
+        .group("🏠 홈")
+        .pathsToMatch("/")
+        .build();
+  }
+
+  @Bean
+  public GroupedOpenApi mypageApi() {
+    return GroupedOpenApi.builder()
+        .group("👤 마이페이지")
+        .pathsToMatch("/")
+        .build();
+  }
+
+  @Bean
+  public GroupedOpenApi myprojectApi() {
+    return GroupedOpenApi.builder()
+        .group("🎨 내 작품")
+        .pathsToMatch("/")
+        .build();
+  }
+
+  @Bean
+  public GroupedOpenApi starApi() {
+    return GroupedOpenApi.builder()
+        .group("⭐ 즐겨찾기")
+        .pathsToMatch("/")
+        .build();
+  }
+
+  @Bean
+  public GroupedOpenApi adminApi() {
+    return GroupedOpenApi.builder()
+        .group("🛠️ 관리자")
+        .pathsToMatch("/")
+        .build();
+  }
 
   @Bean
   public OpenAPI openAPI() {

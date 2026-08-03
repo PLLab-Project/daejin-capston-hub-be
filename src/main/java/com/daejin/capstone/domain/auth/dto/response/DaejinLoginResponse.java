@@ -1,5 +1,6 @@
 package com.daejin.capstone.domain.auth.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 public class DaejinLoginResponse {
 
   private String remainingTries;
+  
   private boolean status;
 
   @Builder
