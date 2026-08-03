@@ -1,11 +1,13 @@
-package com.daejin.capstone.domain.auth.dto;
+package com.daejin.capstone.domain.auth.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class LoginRequestDto {
   private String stdNum;
   private String password;

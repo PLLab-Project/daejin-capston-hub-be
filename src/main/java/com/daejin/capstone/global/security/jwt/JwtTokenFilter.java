@@ -117,7 +117,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         path.startsWith("/login/oauth2/code") ||
         path.startsWith("/swagger-ui") ||
         path.startsWith("/v3/api-docs") ||
-        path.startsWith("/api/v1/auth/refresh");
+        path.startsWith("/api/v1/auth/refresh") ||
+        path.startsWith("/auth");
   }
 
   private UsernamePasswordAuthenticationToken getAuthentication(String token) {
