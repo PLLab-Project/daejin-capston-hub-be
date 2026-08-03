@@ -20,8 +20,9 @@ public class AuthService {
 
   private final RestClient restClient;
 
-  private final String LOGIN_URI = "/subLogin/daejin/login.do";;
+  private final String LOGIN_URI = "/subLogin/daejin/login.do";
   private final String FAIL_KEYWORD = "입력하신 계정정보가 올바르지 않습니다";
+  private final String USER_NOT_FOUND_KEYWORD = "회원정보이(가) 존재 하지 않습니다";
   private final Pattern REMAINING_TRIES_PATTERN =
       Pattern.compile("(\\d+)회\\s*더\\s*잘못입력");
 
@@ -42,26 +43,30 @@ public class AuthService {
         .retrieve()
         .toEntity(String.class);
 
-//    log.info("status: {}, location: {}",
-//        response.getStatusCode(),
-//        response.getHeaders().getLocation());
-//    log.info("body: {}", response.getBody());
-
     return parseResponse(response);
-
   }
 
   private DaejinLoginResponse parseResponse(ResponseEntity<String> response) {
     String html = response.getBody();
 
-    if (html == null || !html.contains(FAIL_KEYWORD)) {
+    // 1. body가 없으면 (리다이렉트 등) 성공으로 간주
+    if (html == null) {
       return DaejinLoginResponse.createSuc();
     }
 
-    Matcher matcher = REMAINING_TRIES_PATTERN.matcher(html);
-    String remainingTries = matcher.find() ? matcher.group(1) : "0";
+    // 2. 회원 존재하지 않음 (우선순위 위)
+    if (html.contains(USER_NOT_FOUND_KEYWORD)) {
+      return DaejinLoginResponse.createUserNotFound(null);
+    }
 
-    return DaejinLoginResponse.createFail(remainingTries);
+    // 3. 계정 정보 불일치 (비밀번호 틀림)
+    if (html.contains(FAIL_KEYWORD)) {
+      Matcher matcher = REMAINING_TRIES_PATTERN.matcher(html);
+      String remainingTries = matcher.find() ? matcher.group(1) : "0";
+      return DaejinLoginResponse.createFail(remainingTries);
+    }
+
+    // 4. 실패 키워드 없으면 성공
+    return DaejinLoginResponse.createSuc();
   }
-
 }

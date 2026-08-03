@@ -10,7 +10,7 @@ import lombok.Setter;
 public class DaejinLoginResponse {
 
   private String remainingTries;
-  
+
   private boolean status;
 
   @Builder
@@ -29,6 +29,13 @@ public class DaejinLoginResponse {
   public static DaejinLoginResponse createFail(String remainingTries) {
     return DaejinLoginResponse.builder()
         .remainingTries(remainingTries)
+        .status(false)
+        .build();
+  }
+
+  public static DaejinLoginResponse createUserNotFound(String remainingTries) {
+    return DaejinLoginResponse.builder()
+        .remainingTries(null)
         .status(false)
         .build();
   }
