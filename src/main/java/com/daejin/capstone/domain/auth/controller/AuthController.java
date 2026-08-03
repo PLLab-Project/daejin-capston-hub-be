@@ -44,7 +44,7 @@ public class AuthController {
                   description = "stdNum: 학번 / password: 대진대 포털 비밀번호"
               ),
               @ExampleObject(
-                  name = "응답 예시",
+                  name = "응답 예시(200)",
                   value = """
                       {
                         "data": {
