@@ -1,6 +1,7 @@
 package com.daejin.capstone.domain.notice.entity;
 
 import com.daejin.capstone.domain.user.entity.User;
+import com.daejin.capstone.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -13,11 +14,13 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notice {
+public class Notice extends BaseEntity {
 
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;

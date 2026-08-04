@@ -169,7 +169,7 @@ public class SwaggerConfig {
   public GroupedOpenApi homeApi() {
     return GroupedOpenApi.builder()
         .group("🏠 홈")
-        .pathsToMatch("/")
+        .pathsToMatch("/home/**")
         .addOpenApiCustomizer(openApi -> openApi.info(new Info()
             .title("🏠 홈")
             .description(

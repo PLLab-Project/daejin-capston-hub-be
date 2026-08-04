@@ -2,11 +2,16 @@ package com.daejin.capstone.domain.notice.service;
 
 import com.daejin.capstone.domain.notice.batch.NoticeBatch;
 import com.daejin.capstone.domain.notice.dto.NoticeBatchDto;
+import com.daejin.capstone.domain.notice.dto.response.NoticePreviewResponse;
+import com.daejin.capstone.domain.notice.entity.NoticeType;
+import com.daejin.capstone.domain.notice.repository.NoticeRepository;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -25,7 +30,54 @@ import org.springframework.web.client.RestClient;
 @RequiredArgsConstructor
 public class NoticeService {
 
+  private final NoticeRepository noticeRepository;
   private final RestClient computerRestClient;
+  private final NoticeBatch noticeBatch;
+
+  public List<NoticePreviewResponse> getNoticePreview() {
+    List<NoticeBatchDto> noticeBatchDtos = noticeBatch.get();
+
+    // 대진대 공지사항글
+    List<NoticePreviewResponse> daejinNoticePreviewResponses = noticeBatchDtos.stream()
+        .map(noticeBatchDto -> {
+          NoticePreviewResponse noticePreviewResponse = NoticePreviewResponse.createNoFile(
+              null,
+              noticeBatchDto.getTitle(),
+              noticeBatchDto.getCreatedAt(),
+              noticeBatchDto.getLink(),
+              NoticeType.DAEJIN
+          );
+          return noticePreviewResponse;
+        })
+        .sorted(Comparator.comparing(NoticePreviewResponse::getCreatedAt).reversed())
+        .toList();
+
+
+    //서비스 공지사항 글
+    List<NoticePreviewResponse> serviceNoticePreviewResponses = noticeRepository.findAll()
+        .stream()
+        .map(notice -> {
+          NoticePreviewResponse noticePreviewResponse = NoticePreviewResponse
+              .builder()
+              .id(notice.getId())
+              .title(notice.getTitle())
+              .link(null)
+              .createdAt(notice.getCreatedAt())
+              .noticeType(NoticeType.SERVICE)
+              .hasFile(notice.getFileUrl() != null)
+              .build();
+          return noticePreviewResponse;
+        })
+        .sorted(Comparator.comparing(NoticePreviewResponse::getCreatedAt).reversed())
+        .toList();
+
+
+    return Stream.concat(
+        daejinNoticePreviewResponses.stream(),
+        serviceNoticePreviewResponses.stream()
+    ).toList();
+
+  }
 
   public List<NoticeBatchDto> getDaejinNotice() {
 
