@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 
 @SpringBootTest
-@EnableJpaAuditing
 class CapstoneApplicationTests {
 
 	@Test

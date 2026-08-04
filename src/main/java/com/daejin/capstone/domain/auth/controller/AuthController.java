@@ -2,7 +2,9 @@ package com.daejin.capstone.domain.auth.controller;
 
 import com.daejin.capstone.domain.auth.docs.AuthControllerDocs;
 import com.daejin.capstone.domain.auth.dto.request.LoginRequestDto;
+import com.daejin.capstone.domain.auth.dto.request.SignUpRequestDto;
 import com.daejin.capstone.domain.auth.dto.response.LoginResponseDto;
+import com.daejin.capstone.domain.auth.dto.response.SignUpResponseDto;
 import com.daejin.capstone.domain.auth.service.AuthService;
 import com.daejin.capstone.global.common.response.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,12 @@ public class AuthController implements AuthControllerDocs {
 
     return ResponseDTO.of(loginResponseDto, "호출이 성공하였습니다.");
 
+  }
+
+  @Override
+  @PostMapping("/signup")
+  public ResponseDTO<SignUpResponseDto> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
+    return null;
   }
 
 }

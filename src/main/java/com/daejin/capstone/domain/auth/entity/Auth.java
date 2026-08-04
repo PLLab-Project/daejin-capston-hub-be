@@ -40,6 +40,10 @@ public class Auth extends BaseEntity {
     this.refreshToken = refreshToken;
   }
 
+  public void updateRefreshToken(String refreshToken) {
+    this.refreshToken = refreshToken;
+  }
+
   public static Auth of(String uuid, String refreshToken) {
     return Auth.builder()
         .id(null)
@@ -55,5 +59,7 @@ public class Auth extends BaseEntity {
         .refreshToken(refreshToken)
         .build();
   }
+
+
 
 }

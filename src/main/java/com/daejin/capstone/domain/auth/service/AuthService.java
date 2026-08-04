@@ -3,11 +3,12 @@ package com.daejin.capstone.domain.auth.service;
 import com.daejin.capstone.domain.auth.dto.request.LoginRequestDto;
 import com.daejin.capstone.domain.auth.dto.response.DaejinLoginResponse;
 import com.daejin.capstone.domain.auth.dto.response.LoginResponseDto;
+import com.daejin.capstone.domain.auth.entity.Auth;
+import com.daejin.capstone.domain.auth.repository.AuthRepository;
 import com.daejin.capstone.domain.user.entity.User;
 import com.daejin.capstone.domain.user.repository.UserRepository;
-import com.daejin.capstone.global.exception.ErrorCode;
-import com.daejin.capstone.global.exception.UserNotFoundException;
 import com.daejin.capstone.global.security.jwt.JwtTokenProvider;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
@@ -25,6 +27,7 @@ import org.springframework.web.client.RestClient;
 public class AuthService {
 
   private final UserRepository userRepository;
+  private final AuthRepository authRepository;
 
   private final RestClient restClient;
   private final JwtTokenProvider jwtTokenProvider;
@@ -35,6 +38,7 @@ public class AuthService {
   private final Pattern REMAINING_TRIES_PATTERN =
       Pattern.compile("(\\d+)회\\s*더\\s*잘못입력");
 
+  @Transactional
   public LoginResponseDto daejinLogin(LoginRequestDto loginRequestDto) {
     MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
     formData.add("layout", "");
@@ -63,23 +67,39 @@ public class AuthService {
     }
 
     //로그인에 성공했을 경우
-    boolean isNewUser = userRepository.findByStdNum(stdNum).isEmpty();
+    User user = userRepository.findByStdNum(stdNum).orElse(null);
 
-    //회원가입이라면
-    if(isNewUser) {
-      LoginResponseDto loginResponseDto = LoginResponseDto.createSuc(isNewUser, null, null);
-      return loginResponseDto;
+    boolean isNewUser = false;
+
+    if(user == null) {
+      // 로그인에 성공했지만 서비스 회원가입 이력이 없을 경우
+      user = userRepository.save(User.createMember(UUID.randomUUID().toString(), loginRequestDto.getStdNum(), null, null));
+      isNewUser = true;
+    } else {
+      if(user.getEmail() == null || user.getName() == null) {
+        isNewUser = true;
+      }
     }
-
-    User user = userRepository.findByStdNum(loginRequestDto.getStdNum()).orElseThrow(
-        () -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND)
-    );
 
     String newAccessToken = jwtTokenProvider.createAccessToken(user.getUuid(), user.getRole());
     String newRefreshToken = jwtTokenProvider.createRefreshToken(user.getUuid(), user.getRole());
 
+    authFlow(user, newRefreshToken);
+
     LoginResponseDto loginResponseDto = LoginResponseDto.createSuc(isNewUser, newAccessToken, newRefreshToken);
     return loginResponseDto;
+  }
+
+  private void authFlow(User user, String refreshToken) {
+
+    Auth auth = authRepository.findByUuid(user.getUuid()).orElse(null);
+
+    if(auth == null) {
+      authRepository.save(Auth.of(user.getUuid(), refreshToken));
+      return;
+    }
+
+    auth.updateRefreshToken(refreshToken);
   }
 
   private DaejinLoginResponse parseResponse(ResponseEntity<String> response) {
