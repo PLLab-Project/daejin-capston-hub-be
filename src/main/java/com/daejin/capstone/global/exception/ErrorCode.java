@@ -46,6 +46,7 @@ public enum ErrorCode {
 
     // 400 Bad Request 이메일 관련 에러코드
     INVALID_EMAIL_FORMAT(400, "INVALID_EMAIL_FORMAT", "이메일 형식이 올바르지 않습니다."),
+    INVALID_TYPE_JWT(400, "INVALID_TYPE_JWT", "JWT 타입이 유효하지 않습니다."),
 
     // 400 약관 관련 에러코드
     REQUIRED_TERMS_NOT_AGREED(400, "REQUIRED_TERMS_NOT_AGREED", "필수 약관에 동의하지 않았습니다."),
@@ -55,6 +56,7 @@ public enum ErrorCode {
     INVALID_CREDENTIALS(401, "INVALID_CREDENTIALS", "아이디 또는 비밀번호가 올바르지 않습니다."),
     UNAUTHORIZED(401, "UNAUTHORIZED", "인증이 필요합니다."),
     TOKEN_EXTRACTION_FAILED(401, "TOKEN_EXTRACTION_FAILED", "토큰 추출에 실패했습니다."),
+    REFRESH_TOKEN_MISMATCH(401, "REFRESH_TOKEN_MISMATCH", "토큰이 불일치합니다"),
 
     // 1000~1003 Custom Token Errors
 

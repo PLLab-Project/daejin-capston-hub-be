@@ -3,6 +3,7 @@ package com.daejin.capstone.domain.auth.docs;
 import com.daejin.capstone.domain.auth.dto.request.LoginRequestDto;
 import com.daejin.capstone.domain.auth.dto.request.SignUpRequestDto;
 import com.daejin.capstone.domain.auth.dto.response.LoginResponseDto;
+import com.daejin.capstone.domain.auth.dto.response.RefreshResponseDto;
 import com.daejin.capstone.global.common.response.ResponseDTO;
 import com.daejin.capstone.global.security.core.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 
 public interface AuthControllerDocs {
@@ -192,7 +195,7 @@ public interface AuthControllerDocs {
                                 """
               ),
               @ExampleObject(
-                  name = "응답 예시(401 / 엑세스 토큰이 유효하지 않을 경우)",
+                  name = "응답 예시(1001 / 엑세스 토큰이 유효하지 않을 경우)",
                   value = """
                             {
                               "localDateTime": "2026-08-04T09:41:11.917451",
@@ -206,7 +209,7 @@ public interface AuthControllerDocs {
                                 | 필드 | 값 | 설명 |
                                 |------|-----|------|
                                 | `data` | `null` | 반환값 없음 |
-                                | `responseCode` | `1001` | 엑세스 토큰이 유효하지 않을 겨우 1001, 엑세스 토큰 재발급 API 실행해야함 |
+                                | `responseCode` | `1001` | 엑세스 토큰이 유효하지 않을 겨우 1001(엑세스 토큰 재발급 API 실행해야함), 리프레시 토큰이 유효하지 않을 경우 1002(로그인 다시) |
                                 """
               ),
               @ExampleObject(
@@ -231,6 +234,88 @@ public interface AuthControllerDocs {
       )
   )
   ResponseDTO<?> signUp(SignUpRequestDto signUpRequestDto, CustomUserDetails customUserDetails);
+
+
+
+
+  @Tag(name = "엑세스토큰 재발급")
+  @Operation(summary = "엑세스토큰 재발급 API 입니다. API 호출 시 헤더에 리프레시토큰을 포함시켜주세요.")
+  @io.swagger.v3.oas.annotations.parameters.RequestBody(
+      required = true,
+      content = @Content(
+          mediaType = "application/json",
+          schema = @Schema(implementation = LoginRequestDto.class),
+          examples = {
+              @ExampleObject(
+                  name = "요청 예시",
+                  value = """
+                           null
+                          """,
+                  description = """
+                                | 필드 | 값 | 설명 |
+                                |------|-----|------|
+                                | `` | `` |  |
+                                """
+              ),
+              @ExampleObject(
+                  name = "응답 예시(200)",
+                  value = """
+                            {
+                              "data": {
+                                "accessToken": "eyJhbGciOiJIUzI1NiJ9.ey.."
+                              },
+                              "localDateTime": "2026-08-04T11:44:02.570259",
+                              "message": "엑세스 토큰 발급 성공",
+                              "responseCode": 200,
+                              "statusCode": "SUCCESS"
+                            }
+                          """,
+                  description = """
+                                | 필드 | 값 | 설명 |
+                                |------|-----|------|
+                                | `accessToken` | `eyJhbGciOiJIUzI1NiJ9.ey..` | 새로 발급된 엑세스 토큰 |
+                                """
+              ),
+              @ExampleObject(
+                  name = "응답 예시(1002 / 유효하지 않은 리프레시 토큰일 경우)",
+                  value = """
+                            {
+                              "localDateTime": "2026-08-04T11:45:30.25369",
+                              "responseCode": 1002,
+                              "statusCode": "REFRESH_TOKEN_INVALID",
+                              "message": "리프레시 토큰이 유효하지 않습니다.",
+                              "data": null
+                            }
+                          """,
+                  description = """
+                                | 필드 | 값 | 설명 |
+                                |------|-----|------|
+                                | `data` | `null` | 반환값 없음 |
+                                | `responseCode` | `1002` | 리프레시 토큰이 유효하지 않을경우 1002(로그인 처음부터 진행 후 토큰 전부 재발급 및 갱신), 엑세스 토큰이 유효하지 않을 경우 1001(재발급 API 실행 후 갱신) |
+                                """
+              ),
+              @ExampleObject(
+                  name = "응답 예시(401 / 헤더에 토큰을 포함하지 않았거나 잘못 들어갔을 경우)",
+                  value = """
+                            {
+                              "localDateTime": "2026-08-04T09:37:04.402702",
+                              "responseCode": 401,
+                              "statusCode": "UNAUTHORIZED",
+                              "message": "인증이 필요합니다.",
+                              "data": null
+                            }
+                          """,
+                  description = """
+                                | 필드 | 값 | 설명 |
+                                |------|-----|------|
+                                | `data` | `null` | 반환값 없음 |
+                                | `responseCode` | `401` | 401번 그대로 반환 |
+                                """
+              )
+          }
+      )
+  )
+  ResponseDTO<RefreshResponseDto> refresh(CustomUserDetails customUserDetails, HttpServletRequest request);
 
 
 }

@@ -4,13 +4,18 @@ import com.daejin.capstone.domain.auth.dto.request.LoginRequestDto;
 import com.daejin.capstone.domain.auth.dto.request.SignUpRequestDto;
 import com.daejin.capstone.domain.auth.dto.response.DaejinLoginResponse;
 import com.daejin.capstone.domain.auth.dto.response.LoginResponseDto;
+import com.daejin.capstone.domain.auth.dto.response.RefreshResponseDto;
 import com.daejin.capstone.domain.auth.entity.Auth;
 import com.daejin.capstone.domain.auth.repository.AuthRepository;
 import com.daejin.capstone.domain.user.entity.User;
 import com.daejin.capstone.domain.user.repository.UserRepository;
 import com.daejin.capstone.global.exception.ErrorCode;
 import com.daejin.capstone.global.exception.UserNotFoundException;
+import com.daejin.capstone.global.security.exception.InvalidTypeJwtException;
+import com.daejin.capstone.global.security.exception.RefreshTokenMismatchException;
+import com.daejin.capstone.global.security.exception.TokenNotFoundException;
 import com.daejin.capstone.global.security.jwt.JwtTokenProvider;
+import com.daejin.capstone.global.security.jwt.JwtTokenType;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -102,6 +107,36 @@ public class AuthService {
 
     user.updateName(signUpRequestDto.getName());
     user.updateEmail(signUpRequestDto.getEmail());
+  }
+
+  @Transactional
+  public RefreshResponseDto refresh(String uuid, String refreshToken) {
+
+    //유저 존재유무 확인
+    User user = userRepository.findByUuid(uuid).orElseThrow(
+        () -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND)
+    );
+
+    //토큰 타입 확인
+    if (!JwtTokenType.REFRESH.equals(jwtTokenProvider.getTypeFromToken(refreshToken))) {
+      throw new InvalidTypeJwtException(ErrorCode.INVALID_TYPE_JWT);
+    }
+
+    //auth에 토큰이 존재하는지 확인
+    Auth auth = authRepository.findByUuid(uuid).orElseThrow(
+        () -> new TokenNotFoundException(ErrorCode.TOKEN_NOT_FOUND)
+    );
+
+    //토큰이 일치하는지 확인
+    if (!refreshToken.equals(auth.getRefreshToken())) {
+      throw new RefreshTokenMismatchException(ErrorCode.REFRESH_TOKEN_MISMATCH);
+    }
+
+    String newAccessToken = jwtTokenProvider.createAccessToken(user.getUuid(), user.getRole());
+
+    return RefreshResponseDto.builder()
+        .accessToken(newAccessToken)
+        .build();
   }
 
 
