@@ -1,12 +1,15 @@
 package com.daejin.capstone.domain.auth.service;
 
 import com.daejin.capstone.domain.auth.dto.request.LoginRequestDto;
+import com.daejin.capstone.domain.auth.dto.request.SignUpRequestDto;
 import com.daejin.capstone.domain.auth.dto.response.DaejinLoginResponse;
 import com.daejin.capstone.domain.auth.dto.response.LoginResponseDto;
 import com.daejin.capstone.domain.auth.entity.Auth;
 import com.daejin.capstone.domain.auth.repository.AuthRepository;
 import com.daejin.capstone.domain.user.entity.User;
 import com.daejin.capstone.domain.user.repository.UserRepository;
+import com.daejin.capstone.global.exception.ErrorCode;
+import com.daejin.capstone.global.exception.UserNotFoundException;
 import com.daejin.capstone.global.security.jwt.JwtTokenProvider;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -89,6 +92,18 @@ public class AuthService {
     LoginResponseDto loginResponseDto = LoginResponseDto.createSuc(isNewUser, newAccessToken, newRefreshToken);
     return loginResponseDto;
   }
+
+  @Transactional
+  public void signUp(String uuid, SignUpRequestDto signUpRequestDto) {
+
+    User user = userRepository.findByUuid(uuid).orElseThrow(
+        () -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND)
+    );
+
+    user.updateName(signUpRequestDto.getName());
+    user.updateEmail(signUpRequestDto.getEmail());
+  }
+
 
   private void authFlow(User user, String refreshToken) {
 

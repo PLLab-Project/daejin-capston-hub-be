@@ -1,7 +1,6 @@
 package com.daejin.capstone.domain.auth.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class LoginRequestDto {
 
+  @Schema(example = "20211476")
   private String stdNum;
+
+  @Schema(example = "password")
   private String password;
 
   @Builder

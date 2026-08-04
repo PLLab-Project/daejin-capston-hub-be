@@ -60,6 +60,18 @@ public class User extends BaseEntity {
     this.email = email;
   }
 
+  public void updateName(String name) {
+    this.name = name;
+  }
+
+  public void updateRole(UserRole role) {
+    this.role = role;
+  }
+
+  public void updateEmail(String email) {
+    this.email = email;
+  }
+
   public static User createMember(String uuid, String stdNum, String name, String email) {
 
     return User.builder()

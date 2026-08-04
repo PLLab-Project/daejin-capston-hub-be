@@ -42,7 +42,7 @@ public class SecurityConfig {
                 "/v3/api-docs/**",
                 "/oauth2/**",
                 "/login/**",
-                "/auth/**"
+                "/auth/login"
             ).permitAll()
             .anyRequest().authenticated()
         );
