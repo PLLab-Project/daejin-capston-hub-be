@@ -32,6 +32,7 @@ public class User extends BaseEntity {
   @Column(length = 255)
   private String stdNum;
 
+  @Column(length = 10)
   @Enumerated(EnumType.STRING)
   private UserRole role;
 

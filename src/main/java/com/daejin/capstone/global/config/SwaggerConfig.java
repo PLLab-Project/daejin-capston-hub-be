@@ -71,11 +71,11 @@ public class SwaggerConfig {
                 Response 케이스:
                 
                 ① 로그인 성공 / 기존 유저
-                {"data": {"accessToken": "eyJhbGciOi...", "refreshToken": "eyJhbGciOi...", "loginStatus": true, "newUser": false, "remainingTries": null}, "responseCode": 200, "statusCode": "SUCCESS"}
+                {"data": {"accessToken": "eyJhbGciOi...", "refreshToken": "eyJhbGciOi...", "loginStatus": true, "newUser": false, "remainingTries": null, "role": "MEMBER"}, "responseCode": 200, "statusCode": "SUCCESS"}
                 → 두 토큰 저장 후 홈 화면으로 이동.
                 
                 ② 로그인 성공 / 새로운 유저
-                {"data": {"accessToken": "eyJhbGciOi...", "refreshToken": "eyJhbGciOi...", "loginStatus": true, "newUser": true, "remainingTries": null}, "responseCode": 200, "statusCode": "SUCCESS"}
+                {"data": {"accessToken": "eyJhbGciOi...", "refreshToken": "eyJhbGciOi...", "loginStatus": true, "newUser": true, "remainingTries": null, "role": "MEMBER"}, "responseCode": 200, "statusCode": "SUCCESS"}
                 → newUser: true면 회원가입 화면으로 이동. 받은 accessToken을 회원가입 API 헤더에 사용.
                 
                 ③ 로그인 실패 / 비밀번호 불일치
@@ -91,7 +91,8 @@ public class SwaggerConfig {
                 refreshToken: 액세스 토큰 만료 시 재발급용
                 loginStatus: 로그인 성공 여부 (true: 성공 / false: 실패)
                 newUser: true면 회원가입 필요, false면 기존 유저
-                remainingTries: 로그인 실패 시 남은 시도 횟수.\s
+                remainingTries: 로그인 실패 시 남은 시도 횟수.
+                "role": 로그인 시 해당 사용자 권한을 나타냄 MEMBER, ADMIN 존재 / ADMIN 일 경우 관리자 \s
                 
                 ## 2. 회원가입: POST /auth/signup
                 

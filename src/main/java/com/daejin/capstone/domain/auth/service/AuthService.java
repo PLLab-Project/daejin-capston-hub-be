@@ -94,7 +94,15 @@ public class AuthService {
 
     authFlow(user, newRefreshToken);
 
-    LoginResponseDto loginResponseDto = LoginResponseDto.createSuc(isNewUser, newAccessToken, newRefreshToken);
+    String userRole = user.getRole().toString();
+    if(userRole.equals("PROF")) {
+      userRole = "ADMIN";
+    } else {
+      userRole = "MEMBER";
+    }
+
+
+    LoginResponseDto loginResponseDto = LoginResponseDto.createSuc(isNewUser, newAccessToken, newRefreshToken, userRole);
     return loginResponseDto;
   }
 

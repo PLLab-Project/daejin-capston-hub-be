@@ -1,5 +1,6 @@
 package com.daejin.capstone.global.security.config;
 
+import com.daejin.capstone.domain.user.entity.UserRole;
 import com.daejin.capstone.global.common.response.ResponseDTO;
 import com.daejin.capstone.global.exception.ErrorCode;
 import com.daejin.capstone.global.security.jwt.JwtTokenFilter;
@@ -46,6 +47,9 @@ public class SecurityConfig {
                 "/home/notice/**",
                 "/files/**"
             ).permitAll()
+            .requestMatchers(
+                "/admin/**"
+            ).hasRole(UserRole.PROF.toString())
             .anyRequest().authenticated()
         );
 

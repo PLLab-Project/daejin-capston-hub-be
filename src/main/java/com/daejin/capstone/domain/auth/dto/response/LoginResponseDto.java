@@ -15,23 +15,26 @@ public class LoginResponseDto {
   private boolean isNewUser;
   private String accessToken;
   private String refreshToken;
+  private String role;
 
   @Builder
-  private LoginResponseDto(String remainingTries, boolean loginStatus, boolean isNewUser, String accessToken, String refreshToken) {
+  private LoginResponseDto(String remainingTries, boolean loginStatus, boolean isNewUser, String accessToken, String refreshToken, String role) {
     this.remainingTries = remainingTries;
     this.loginStatus = loginStatus;
     this.isNewUser = isNewUser;
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
+    this.role = role;
   }
 
-  public static LoginResponseDto createSuc(boolean isNewUser, String accessToken, String refreshToken) {
+  public static LoginResponseDto createSuc(boolean isNewUser, String accessToken, String refreshToken, String role) {
     return LoginResponseDto.builder()
         .remainingTries(null)
         .loginStatus(true)
         .isNewUser(isNewUser)
         .accessToken(accessToken)
         .refreshToken(refreshToken)
+        .role(role)
         .build();
   }
 
@@ -42,6 +45,7 @@ public class LoginResponseDto {
         .isNewUser(false)
         .accessToken(null)
         .refreshToken(null)
+        .role(null)
         .build();
   }
 
