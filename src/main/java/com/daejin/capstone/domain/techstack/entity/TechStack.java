@@ -10,9 +10,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TechStack {
 
@@ -23,16 +25,20 @@ public class TechStack {
   @JoinColumn(name = "project_id")
   private Project project;
 
+  private String stackName;
+
   @Builder
-  private TechStack(Long id, Project project) {
+  private TechStack(Long id, Project project, String stackName) {
     this.id = id;
     this.project = project;
+    this.stackName = stackName;
   }
 
-  public static TechStack from(Project project) {
+  public static TechStack from(Project project, String stackName) {
     return TechStack.builder()
         .id(null)
         .project(project)
+        .stackName(stackName)
         .build();
   }
 

@@ -1,11 +1,9 @@
 package com.daejin.capstone.domain.project.entity;
 
-import com.daejin.capstone.domain.bookmark.entity.Bookmark;
 import com.daejin.capstone.domain.category.entity.Category;
 import com.daejin.capstone.domain.file.entity.File;
 import com.daejin.capstone.domain.techstack.entity.TechStack;
 import com.daejin.capstone.domain.user.entity.User;
-import jakarta.persistence.Access;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,9 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Project  {
 
@@ -43,6 +43,9 @@ public class Project  {
   @Lob
   private String summary;
 
+  @Lob
+  private String description;
+
   @Column(length = 255)
   private String demoVideoUrl;
 
@@ -55,16 +58,18 @@ public class Project  {
 
   @Builder
   private Project(Long id, User user, Category category, String title,
-      String summary, String demoVideoUrl) {
+      String summary, String demoVideoUrl, String description) {
     this.id = id;
     this.user = user;
     this.category = category;
     this.title = title;
     this.summary = summary;
     this.demoVideoUrl = demoVideoUrl;
+    this.description = description;
   }
 
-  public static Project of(User user, Category category, String title, String summary, String demoVideoUrl) {
+  public static Project of(User user, Category category, String title, String summary,
+      String demoVideoUrl, String description) {
     return Project.builder()
         .id(null)
         .user(user)
@@ -72,6 +77,7 @@ public class Project  {
         .title(title)
         .summary(summary)
         .demoVideoUrl(demoVideoUrl)
+        .description(description)
         .build();
   }
 }

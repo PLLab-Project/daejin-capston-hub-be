@@ -1,6 +1,7 @@
 package com.daejin.capstone.global.exception;
 
 
+import com.daejin.capstone.domain.category.CategoryNotFoundException;
 import com.daejin.capstone.domain.notice.exception.PostNotFoundException;
 import com.daejin.capstone.global.common.response.ResponseDTO;
 import com.daejin.capstone.global.security.exception.InvalidTypeJwtException;
@@ -17,6 +18,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+  @ExceptionHandler(CategoryNotFoundException.class)
+  public ResponseEntity<ResponseDTO> categoryNotFoundException(CategoryNotFoundException e) {
+    log.error("저장된 해당 분야가 없습니다.", e);
+    return ResponseEntity
+        .status(ErrorCode.CATEGORY_NOT_FOUND.getActualStatusCode())
+        .body(ResponseDTO.of(ErrorCode.CATEGORY_NOT_FOUND));
+  }
 
   @ExceptionHandler(PostNotFoundException.class)
   public ResponseEntity<ResponseDTO> postNotFoundException(PostNotFoundException e) {
