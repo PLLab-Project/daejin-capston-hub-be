@@ -43,7 +43,7 @@ public class SecurityConfig {
                 "/oauth2/**",
                 "/login/**",
                 "/auth/login",
-                "/home/notice/preview",
+                "/home/notice/**",
                 "/files/**"
             ).permitAll()
             .anyRequest().authenticated()

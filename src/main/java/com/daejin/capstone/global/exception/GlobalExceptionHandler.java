@@ -1,6 +1,7 @@
 package com.daejin.capstone.global.exception;
 
 
+import com.daejin.capstone.domain.notice.exception.PostNotFoundException;
 import com.daejin.capstone.global.common.response.ResponseDTO;
 import com.daejin.capstone.global.security.exception.InvalidTypeJwtException;
 import com.daejin.capstone.global.security.exception.TokenNotFoundException;
@@ -16,6 +17,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+  @ExceptionHandler(PostNotFoundException.class)
+  public ResponseEntity<ResponseDTO> postNotFoundException(PostNotFoundException e) {
+    log.error("해당 게시글이 존재하지 않습니다.", e);
+    return ResponseEntity
+        .status(ErrorCode.POST_NOT_FOUND.getActualStatusCode())
+        .body(ResponseDTO.of(ErrorCode.POST_NOT_FOUND));
+  }
 
   @ExceptionHandler(UserNotFoundException.class)
   public ResponseEntity<ResponseDTO> userNotFoundException(UserNotFoundException e) {

@@ -5,9 +5,11 @@ import com.daejin.capstone.domain.file.repository.FileRepository;
 import com.daejin.capstone.domain.notice.batch.NoticeBatch;
 import com.daejin.capstone.domain.notice.dto.NoticeBatchDto;
 import com.daejin.capstone.domain.notice.dto.request.RegisterNoticeRequest;
+import com.daejin.capstone.domain.notice.dto.response.NoticeDetailResponse;
 import com.daejin.capstone.domain.notice.dto.response.NoticePreviewResponse;
 import com.daejin.capstone.domain.notice.entity.Notice;
 import com.daejin.capstone.domain.notice.entity.NoticeType;
+import com.daejin.capstone.domain.notice.exception.PostNotFoundException;
 import com.daejin.capstone.domain.notice.repository.NoticeRepository;
 import com.daejin.capstone.domain.user.entity.User;
 import com.daejin.capstone.domain.user.repository.UserRepository;
@@ -90,6 +92,27 @@ public class NoticeService {
         daejinNoticePreviewResponses.stream(),
         serviceNoticePreviewResponses.stream()
     ).toList();
+
+  }
+
+  public NoticeDetailResponse getNoticeDetail(Long id) {
+    Notice notice = noticeRepository.findById(id).orElseThrow(
+        () -> new PostNotFoundException(ErrorCode.POST_NOT_FOUND)
+    );
+
+    List<String> files = fileRepository.findByNotice_Id(id).stream()
+        .map(File::getFileUrl)
+        .toList();
+
+    NoticeDetailResponse response = NoticeDetailResponse.builder()
+        .id(id)
+        .title(notice.getTitle())
+        .contents(notice.getContents())
+        .createdAt(notice.getCreatedAt())
+        .fileUrl(files)
+        .build();
+
+    return response;
 
   }
 

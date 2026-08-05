@@ -1,5 +1,7 @@
 package com.daejin.capstone.domain.notice.dto.response;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +15,9 @@ import lombok.Setter;
 @Builder
 public class NoticeDetailResponse {
 
-  private int a;
-
+  private Long id;
+  private String title;
+  private String contents;
+  private LocalDateTime createdAt;
+  private List<String> fileUrl;
 }
