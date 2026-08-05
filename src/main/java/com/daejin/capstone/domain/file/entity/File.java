@@ -1,5 +1,6 @@
 package com.daejin.capstone.domain.file.entity;
 
+import com.daejin.capstone.domain.notice.entity.Notice;
 import com.daejin.capstone.domain.project.entity.Project;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,30 +27,59 @@ public class File {
   @JoinColumn(name = "project_id")
   private Project project;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "notice_id")
+  private Notice notice;
+
   @Column(length = 255)
   private String fileUrl;
 
+  @Column(length = 20)
   @Enumerated(EnumType.STRING)
   private FileType type;
 
   private Boolean thumbnail;
 
   @Builder
-  private File(Long id, Project project, String fileUrl, FileType type, Boolean thumbnail) {
+  private File(Long id, Project project, Notice notice, String fileUrl, FileType type, Boolean thumbnail) {
     this.id = id;
     this.project = project;
+    this.notice = notice;
     this.fileUrl = fileUrl;
     this.type = type;
     this.thumbnail = thumbnail;
   }
 
-  public static File of(Project project, String fileUrl, FileType type, Boolean thumbnail) {
+  public static File of(Project project, Notice notice, String fileUrl, FileType type, Boolean thumbnail) {
     return File.builder()
         .id(null)
         .project(project)
+        .notice(notice)
         .fileUrl(fileUrl)
         .type(type)
         .thumbnail(thumbnail)
+        .build();
+  }
+
+  public static File createProjectFile(Project project, String fileUrl, FileType type, Boolean thumbnail) {
+    return File.builder()
+        .id(null)
+        .project(project)
+        .notice(null)
+        .fileUrl(fileUrl)
+        .type(type)
+        .thumbnail(thumbnail)
+        .build();
+  }
+
+  public static File createNoticeFile(Notice notice, String fileUrl) {
+    return File.builder()
+        .id(null)
+        .project(null)
+        .notice(notice)
+        .fileUrl(fileUrl)
+        .type(FileType.GENERAL)
+        .thumbnail(false)
         .build();
   }
 

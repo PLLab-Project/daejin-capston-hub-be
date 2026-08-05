@@ -265,7 +265,7 @@ public class SwaggerConfig {
   public GroupedOpenApi adminApi() {
     return GroupedOpenApi.builder()
         .group("🛠️ 관리자")
-        .pathsToMatch("/")
+        .pathsToMatch("/admin/**")
         .addOpenApiCustomizer(openApi -> openApi.info(new Info()
             .title("🛠️ 관리자")
             .description(

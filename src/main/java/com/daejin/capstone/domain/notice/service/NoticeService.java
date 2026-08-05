@@ -1,10 +1,19 @@
 package com.daejin.capstone.domain.notice.service;
 
+import com.daejin.capstone.domain.file.entity.File;
+import com.daejin.capstone.domain.file.repository.FileRepository;
 import com.daejin.capstone.domain.notice.batch.NoticeBatch;
 import com.daejin.capstone.domain.notice.dto.NoticeBatchDto;
+import com.daejin.capstone.domain.notice.dto.request.RegisterNoticeRequest;
 import com.daejin.capstone.domain.notice.dto.response.NoticePreviewResponse;
+import com.daejin.capstone.domain.notice.entity.Notice;
 import com.daejin.capstone.domain.notice.entity.NoticeType;
 import com.daejin.capstone.domain.notice.repository.NoticeRepository;
+import com.daejin.capstone.domain.user.entity.User;
+import com.daejin.capstone.domain.user.repository.UserRepository;
+import com.daejin.capstone.global.config.FileStorage;
+import com.daejin.capstone.global.exception.ErrorCode;
+import com.daejin.capstone.global.exception.UserNotFoundException;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
@@ -24,15 +33,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class NoticeService {
 
+  private final FileRepository fileRepository;
   private final NoticeRepository noticeRepository;
   private final RestClient computerRestClient;
   private final NoticeBatch noticeBatch;
+  private final UserRepository userRepository;
+
+  private final FileStorage fileStorage;
 
   public List<NoticePreviewResponse> getNoticePreview() {
     List<NoticeBatchDto> noticeBatchDtos = noticeBatch.get();
@@ -64,7 +78,7 @@ public class NoticeService {
               .link(null)
               .createdAt(notice.getCreatedAt())
               .noticeType(NoticeType.SERVICE)
-              .hasFile(notice.getFileUrl() != null)
+              .hasFile(!notice.getFiles().isEmpty())
               .build();
           return noticePreviewResponse;
         })
@@ -98,6 +112,24 @@ public class NoticeService {
 
     return parseNotices(response.getBody());
 
+  }
+
+  public void registerNotice(RegisterNoticeRequest request, String uuid, List<MultipartFile> files) {
+
+    User user = userRepository.findByUuid(uuid).orElseThrow(
+        () -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND)
+    );
+
+    Notice notice = Notice.of(user, null, request.getTitle(), request.getContents());
+    noticeRepository.save(notice);
+
+    if(files != null) {
+      List<File> fileEntities = files.stream()
+          .map(file -> File.createNoticeFile(notice, fileStorage.store(file)))
+          .toList();
+
+      fileRepository.saveAll(fileEntities);
+    }
   }
 
 

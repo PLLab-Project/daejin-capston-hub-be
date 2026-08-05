@@ -1,5 +1,6 @@
 package com.daejin.capstone.domain.notice.entity;
 
+import com.daejin.capstone.domain.file.entity.File;
 import com.daejin.capstone.domain.user.entity.User;
 import com.daejin.capstone.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -12,6 +13,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,32 +33,32 @@ public class Notice extends BaseEntity {
   @JoinColumn(name = "user_id")
   private User user;
 
+  @OneToMany(mappedBy = "notice")
+  private List<File> files = new ArrayList<>();
+
   @Column(length = 255)
   private String title;
 
   @Lob
   private String contents;
 
-  @Column(length = 255)
-  private String fileUrl;
-
   @Builder
-  private Notice(Long id, User user, String title, String contents, String fileUrl) {
+  private Notice(Long id, User user, List<File> files, String title, String contents) {
     this.id = id;
     this.user = user;
+    this.files = files;
     this.title = title;
     this.contents = contents;
-    this.fileUrl = fileUrl;
   }
 
-  public static Notice of(User user, String title, String contents, String fileUrl) {
+  public static Notice of(User user, List<File> files, String title, String contents) {
 
     return Notice.builder()
         .id(null)
+        .files(files)
         .user(user)
         .title(title)
         .contents(contents)
-        .fileUrl(fileUrl)
         .build();
 
   }

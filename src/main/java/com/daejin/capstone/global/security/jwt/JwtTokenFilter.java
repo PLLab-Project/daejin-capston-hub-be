@@ -119,7 +119,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         path.startsWith("/v3/api-docs") ||
         path.startsWith("/api/v1/auth/refresh") ||
         path.startsWith("/auth/login") ||
-        path.startsWith("/home/notice/preview");
+        path.startsWith("/home/notice/preview") ||
+        path.startsWith("/files");
   }
 
   private UsernamePasswordAuthenticationToken getAuthentication(String token) {

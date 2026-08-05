@@ -2,16 +2,26 @@ spring:
   config:
     activate:
       on-profile: prod
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DB_PROD_URL}
     username: ${DB_PROD_USERNAME}
     password: ${DB_PROD_PASSWORD}
+
   jpa:
     hibernate:
       ddl-auto: update
+
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 800MB
 
 jwt:
   secret: ${JWT_SECRET}
   access-token-expiry: ${JWT_ACCESS_TOKEN_EXPIRY:3600000}
   refresh-token-expiry: ${JWT_REFRESH_TOKEN_EXPIRY:604800000}
+
+file:
+  upload-path: ${FILE_PROD_UPLOAD_PATH}

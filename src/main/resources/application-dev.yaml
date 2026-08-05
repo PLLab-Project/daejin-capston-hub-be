@@ -13,7 +13,16 @@ spring:
     hibernate:
       ddl-auto: update
 
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 800MB
+
 jwt:
   secret: ${JWT_SECRET}
   access-token-expiry: ${JWT_ACCESS_TOKEN_EXPIRY:3600000}
   refresh-token-expiry: ${JWT_REFRESH_TOKEN_EXPIRY:604800000}
+
+file:
+  upload-path: ${FILE_DEV_UPLOAD_PATH}
+
