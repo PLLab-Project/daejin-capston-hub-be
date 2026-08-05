@@ -148,7 +148,10 @@ public class NoticeService {
 
     if(files != null) {
       List<File> fileEntities = files.stream()
-          .map(file -> File.createNoticeFile(notice, fileStorage.store(file)))
+          .map(file -> {
+            String originalFileName = file.getOriginalFilename();
+            return File.createNoticeFile(notice, fileStorage.store(file), originalFileName);
+          })
           .toList();
 
       fileRepository.saveAll(fileEntities);

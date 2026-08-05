@@ -37,6 +37,9 @@ public class File extends BaseEntity {
   @Column(length = 255)
   private String fileUrl;
 
+  @Column(length = 255)
+  private String originalName;
+
   @Column(length = 20)
   @Enumerated(EnumType.STRING)
   private FileType type;
@@ -44,43 +47,47 @@ public class File extends BaseEntity {
   private Boolean thumbnail;
 
   @Builder
-  private File(Long id, Project project, Notice notice, String fileUrl, FileType type, Boolean thumbnail) {
+  private File(Long id, Project project, Notice notice, String fileUrl, String originalName, FileType type, Boolean thumbnail) {
     this.id = id;
     this.project = project;
     this.notice = notice;
     this.fileUrl = fileUrl;
+    this.originalName = originalName;
     this.type = type;
     this.thumbnail = thumbnail;
   }
 
-  public static File of(Project project, Notice notice, String fileUrl, FileType type, Boolean thumbnail) {
+  public static File of(Project project, Notice notice, String fileUrl, String originalName, FileType type, Boolean thumbnail) {
     return File.builder()
         .id(null)
         .project(project)
         .notice(notice)
         .fileUrl(fileUrl)
+        .originalName(originalName)
         .type(type)
         .thumbnail(thumbnail)
         .build();
   }
 
-  public static File createProjectFile(Project project, String fileUrl, FileType type, Boolean thumbnail) {
+  public static File createProjectFile(Project project, String fileUrl, String originalName, FileType type, Boolean thumbnail) {
     return File.builder()
         .id(null)
         .project(project)
         .notice(null)
         .fileUrl(fileUrl)
+        .originalName(originalName)
         .type(type)
         .thumbnail(thumbnail)
         .build();
   }
 
-  public static File createNoticeFile(Notice notice, String fileUrl) {
+  public static File createNoticeFile(Notice notice, String fileUrl, String originalName) {
     return File.builder()
         .id(null)
         .project(null)
         .notice(notice)
         .fileUrl(fileUrl)
+        .originalName(originalName)
         .type(FileType.GENERAL)
         .thumbnail(false)
         .build();
