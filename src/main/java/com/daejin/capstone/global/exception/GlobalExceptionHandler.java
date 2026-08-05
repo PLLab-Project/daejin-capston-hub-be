@@ -1,14 +1,12 @@
 package com.daejin.capstone.global.exception;
 
 
-import com.daejin.capstone.domain.category.CategoryNotFoundException;
+import com.daejin.capstone.domain.category.exception.CategoryNotFoundException;
 import com.daejin.capstone.domain.notice.exception.PostNotFoundException;
 import com.daejin.capstone.global.common.response.ResponseDTO;
 import com.daejin.capstone.global.security.exception.InvalidTypeJwtException;
 import com.daejin.capstone.global.security.exception.TokenNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.Token;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

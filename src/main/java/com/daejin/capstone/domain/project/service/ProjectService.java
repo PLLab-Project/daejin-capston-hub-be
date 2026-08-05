@@ -1,6 +1,6 @@
 package com.daejin.capstone.domain.project.service;
 
-import com.daejin.capstone.domain.category.CategoryNotFoundException;
+import com.daejin.capstone.domain.category.exception.CategoryNotFoundException;
 import com.daejin.capstone.domain.category.entity.Category;
 import com.daejin.capstone.domain.category.repository.CategoryRepository;
 import com.daejin.capstone.domain.file.entity.File;

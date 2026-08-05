@@ -15,7 +15,7 @@ import lombok.Setter;
 @Builder
 public class NoticePreviewResponse {
 
-  private Long id;
+  private Long noticeId;
   private String title;
   private LocalDateTime createdAt;
   private String link;
@@ -24,7 +24,7 @@ public class NoticePreviewResponse {
 
   public static NoticePreviewResponse createNoFile(Long id, String title, LocalDateTime createdAt, String link, NoticeType noticeType) {
     return NoticePreviewResponse.builder()
-        .id(id)
+        .noticeId(id)
         .title(title)
         .createdAt(createdAt)
         .hasFile(false)

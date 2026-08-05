@@ -1,4 +1,4 @@
-package com.daejin.capstone.domain.category;
+package com.daejin.capstone.domain.category.exception;
 
 import com.daejin.capstone.global.exception.CustomException;
 import com.daejin.capstone.global.exception.ErrorCode;

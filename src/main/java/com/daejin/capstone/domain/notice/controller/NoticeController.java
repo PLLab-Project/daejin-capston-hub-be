@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -42,9 +41,9 @@ public class NoticeController implements NoticeControllerDocs {
   }
 
   @Override
-  @GetMapping("/home/notice/detail/{id}")
-  public ResponseDTO<NoticeDetailResponse> getNoticeDetail(@PathVariable Long id) {
-    NoticeDetailResponse noticeDetailResponse = noticeService.getNoticeDetail(id);
+  @GetMapping("/home/notice/detail/{noticeId}")
+  public ResponseDTO<NoticeDetailResponse> getNoticeDetail(@PathVariable Long noticeId) {
+    NoticeDetailResponse noticeDetailResponse = noticeService.getNoticeDetail(noticeId);
     return ResponseDTO.of(noticeDetailResponse, "공지사항 상세 조회에 성공하였습니다.");
   }
 

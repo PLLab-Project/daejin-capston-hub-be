@@ -80,7 +80,7 @@ public class NoticeService {
         .map(notice -> {
           NoticePreviewResponse noticePreviewResponse = NoticePreviewResponse
               .builder()
-              .id(notice.getId())
+              .noticeId(notice.getId())
               .title(notice.getTitle())
               .link(null)
               .createdAt(notice.getCreatedAt())
