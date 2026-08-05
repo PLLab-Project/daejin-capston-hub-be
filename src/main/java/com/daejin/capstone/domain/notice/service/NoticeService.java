@@ -6,6 +6,7 @@ import com.daejin.capstone.domain.notice.batch.NoticeBatch;
 import com.daejin.capstone.domain.notice.dto.NoticeBatchDto;
 import com.daejin.capstone.domain.notice.dto.request.RegisterNoticeRequest;
 import com.daejin.capstone.domain.notice.dto.response.NoticeDetailResponse;
+import com.daejin.capstone.domain.notice.dto.response.NoticeFileResponse;
 import com.daejin.capstone.domain.notice.dto.response.NoticePreviewResponse;
 import com.daejin.capstone.domain.notice.entity.Notice;
 import com.daejin.capstone.domain.notice.entity.NoticeType;
@@ -32,6 +33,7 @@ import org.jsoup.Jsoup;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
@@ -100,8 +102,13 @@ public class NoticeService {
         () -> new PostNotFoundException(ErrorCode.POST_NOT_FOUND)
     );
 
-    List<String> files = fileRepository.findByNotice_Id(id).stream()
-        .map(File::getFileUrl)
+    List<NoticeFileResponse> files = fileRepository.findByNotice_Id(id).stream()
+        .map(file -> {
+          return NoticeFileResponse.builder()
+              .originalName(file.getOriginalName())
+              .fileUrl(file.getFileUrl())
+              .build();
+        })
         .toList();
 
     NoticeDetailResponse response = NoticeDetailResponse.builder()
@@ -109,7 +116,7 @@ public class NoticeService {
         .title(notice.getTitle())
         .contents(notice.getContents())
         .createdAt(notice.getCreatedAt())
-        .fileUrl(files)
+        .files(files)
         .build();
 
     return response;
@@ -137,6 +144,7 @@ public class NoticeService {
 
   }
 
+  @Transactional
   public void registerNotice(RegisterNoticeRequest request, String uuid, List<MultipartFile> files) {
 
     User user = userRepository.findByUuid(uuid).orElseThrow(
