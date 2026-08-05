@@ -8,10 +8,15 @@ import com.daejin.capstone.domain.notice.dto.response.NoticeDetailResponse;
 import com.daejin.capstone.domain.notice.dto.response.NoticePreviewResponse;
 import com.daejin.capstone.domain.notice.service.NoticeService;
 import com.daejin.capstone.global.common.response.ResponseDTO;
+import com.daejin.capstone.global.dto.PageResponse;
 import com.daejin.capstone.global.security.core.CustomUserDetails;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,11 +34,11 @@ public class NoticeController implements NoticeControllerDocs {
 
   @Override
   @GetMapping("/home/notice/preview")
-  public ResponseDTO<List<NoticePreviewResponse>> getNoticePreview() {
+  public ResponseDTO<PageResponse<NoticePreviewResponse>> getNoticePreview(
+      @PageableDefault(size = 10) Pageable pageable) {
 
-    List<NoticePreviewResponse> noticePreviewResponses = noticeService.getNoticePreview();
-    return ResponseDTO.of(noticePreviewResponses, "공지사항 목록 조회에 성공하였습니다.");
-
+    Page<NoticePreviewResponse> noticePreviewResponses = noticeService.getNoticePreview(pageable);
+    return ResponseDTO.of(PageResponse.from(noticePreviewResponses), "공지사항 목록 조회에 성공하였습니다.");
   }
 
   @Override

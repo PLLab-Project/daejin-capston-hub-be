@@ -4,11 +4,14 @@ import com.daejin.capstone.domain.notice.dto.request.RegisterNoticeRequest;
 import com.daejin.capstone.domain.notice.dto.response.NoticeDetailResponse;
 import com.daejin.capstone.domain.notice.dto.response.NoticePreviewResponse;
 import com.daejin.capstone.global.common.response.ResponseDTO;
+import com.daejin.capstone.global.dto.PageResponse;
 import com.daejin.capstone.global.security.core.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface NoticeControllerDocs {
@@ -16,7 +19,7 @@ public interface NoticeControllerDocs {
 
   @Tag(name = "공지사항")
   @Operation(summary = "공지사항 preview 조회 API 입니다. id 값이 null인 것은 대진대 공지사항 글 입니다.")
-  ResponseDTO<List<NoticePreviewResponse>> getNoticePreview();
+  ResponseDTO<PageResponse<NoticePreviewResponse>> getNoticePreview(Pageable pageable);
 
   @Tag(name = "공지사항")
   @Operation(summary = "공지사항 detail 조회 API 입니다. 공지글 Id값을 통해 자세한 내용을 조회합니다.")

@@ -30,6 +30,9 @@ import org.jsoup.select.Elements;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -52,7 +55,7 @@ public class NoticeService {
 
   private final FileStorage fileStorage;
 
-  public List<NoticePreviewResponse> getNoticePreview() {
+  public Page<NoticePreviewResponse> getNoticePreview(Pageable pageable) {
     List<NoticeBatchDto> noticeBatchDtos = noticeBatch.get();
 
     // 대진대 공지사항글
@@ -90,10 +93,22 @@ public class NoticeService {
         .toList();
 
 
-    return Stream.concat(
-        daejinNoticePreviewResponses.stream(),
-        serviceNoticePreviewResponses.stream()
-    ).toList();
+    // 합친 뒤 정렬
+    List<NoticePreviewResponse> merged = Stream.concat(
+            daejinNoticePreviewResponses.stream(),
+            serviceNoticePreviewResponses.stream()
+        )
+        .toList();
+
+    // 페이징 처리
+    int start = (int) pageable.getOffset();
+    int end = Math.min(start + pageable.getPageSize(), merged.size());
+
+    List<NoticePreviewResponse> pagedContent = start >= merged.size()
+        ? List.of()
+        : merged.subList(start, end);
+
+    return new PageImpl<>(pagedContent, pageable, merged.size());
 
   }
 
