@@ -3,6 +3,7 @@ package com.daejin.capstone.global.exception;
 
 import com.daejin.capstone.domain.category.exception.CategoryNotFoundException;
 import com.daejin.capstone.domain.notice.exception.PostNotFoundException;
+import com.daejin.capstone.domain.project.exception.ProjectNotFoundException;
 import com.daejin.capstone.global.common.response.ResponseDTO;
 import com.daejin.capstone.global.security.exception.InvalidTypeJwtException;
 import com.daejin.capstone.global.security.exception.TokenNotFoundException;
@@ -23,6 +24,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity
         .status(ErrorCode.CATEGORY_NOT_FOUND.getActualStatusCode())
         .body(ResponseDTO.of(ErrorCode.CATEGORY_NOT_FOUND));
+  }
+
+  @ExceptionHandler(ProjectNotFoundException.class)
+  public ResponseEntity<ResponseDTO> projectNotFoundException(ProjectNotFoundException e) {
+    log.error("저장된 작품이 없습니다.", e);
+    return ResponseEntity
+        .status(ErrorCode.PROJECT_NOT_FOUND.getActualStatusCode())
+        .body(ResponseDTO.of(ErrorCode.PROJECT_NOT_FOUND));
   }
 
   @ExceptionHandler(PostNotFoundException.class)

@@ -2,6 +2,7 @@ package com.daejin.capstone.domain.project.controller;
 
 import com.daejin.capstone.domain.project.dto.ProjectSearchCondition;
 import com.daejin.capstone.domain.project.dto.request.RegisterProjectRequest;
+import com.daejin.capstone.domain.project.dto.response.ProjectDetailResponse;
 import com.daejin.capstone.domain.project.dto.response.ProjectPreviewResponse;
 import com.daejin.capstone.domain.project.dto.response.RegisterProjectResponse;
 import com.daejin.capstone.domain.project.service.ProjectService;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -73,6 +75,20 @@ public class ProjectController {
         PageResponse.from(projectPreviewResponses),
         "작품 목록 조회에 성공하였습니다."
     );
+  }
+
+  @Tag(name = "작품")
+  @Operation(summary = "작품 상세조회 API 입니다.")
+  @GetMapping("/home/project/detail/{projectId}")
+  public ResponseDTO<ProjectDetailResponse> getProjectDetail(
+      @AuthenticationPrincipal CustomUserDetails userDetails,
+      @PathVariable Long projectId
+  ) {
+
+    String uuid = (userDetails != null) ? userDetails.getUuid() : null;
+
+    ProjectDetailResponse response = projectService.getProjectDetail(projectId, uuid);
+    return ResponseDTO.of(response, "조회에 성공하였습니다.");
   }
 
 

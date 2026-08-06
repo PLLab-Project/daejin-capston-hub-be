@@ -9,9 +9,11 @@ import com.daejin.capstone.domain.file.entity.FileType;
 import com.daejin.capstone.domain.file.repository.FileRepository;
 import com.daejin.capstone.domain.project.dto.ProjectSearchCondition;
 import com.daejin.capstone.domain.project.dto.request.RegisterProjectRequest;
+import com.daejin.capstone.domain.project.dto.response.ProjectDetailResponse;
 import com.daejin.capstone.domain.project.dto.response.ProjectPreviewResponse;
 import com.daejin.capstone.domain.project.dto.response.RegisterProjectResponse;
 import com.daejin.capstone.domain.project.entity.Project;
+import com.daejin.capstone.domain.project.exception.ProjectNotFoundException;
 import com.daejin.capstone.domain.project.repository.ProjectRepository;
 import com.daejin.capstone.domain.techstack.entity.TechStack;
 import com.daejin.capstone.domain.techstack.repository.TechStackRepository;
@@ -151,6 +153,97 @@ public class ProjectService {
         .uploadUserName(project.getUser().getName())
         .createdAt(project.getCreatedAt().toString())
         .isBookmarked(isBookMarked)
+        .build();
+  }
+
+  @Transactional
+  public ProjectDetailResponse getProjectDetail(Long projectId, String uuid) {
+
+    User user = (uuid != null)
+        ? userRepository.findByUuid(uuid).orElseThrow(
+        () -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND))
+        : null;
+
+    Project project = projectRepository.findById(projectId).orElseThrow(
+        () -> new ProjectNotFoundException(ErrorCode.PROJECT_NOT_FOUND)
+    );
+
+    Category category = categoryRepository.findById(project.getCategory().getId()).orElseThrow(
+        () -> new CategoryNotFoundException(ErrorCode.CATEGORY_NOT_FOUND)
+    );
+
+    boolean isBookMarked = user == null ? false : bookMarkRepository.existsByUserAndProject(user, project);
+    boolean isMine = user == null ? false : user.getId() == project.getUser().getId();
+
+    List<String> techStacks = techStackRepository.findByProject_Id(projectId).stream()
+        .map(TechStack::getStackName)
+        .toList();
+
+    List<File> files = fileRepository.findByProject_Id(projectId);
+
+    if(files.isEmpty()) {
+      return ProjectDetailResponse.builder()
+          .projectId(projectId)
+          .title(project.getTitle())
+          .summary(project.getSummary())
+          .name(project.getUser().getName())
+          .createdAt(project.getCreatedAt())
+          .categoryName(category.getName())
+          .techStacks(techStacks)
+          .demoVideoUrl(project.getDemoVideoUrl())
+          .bookMarked(isBookMarked)
+          .mine(isMine)
+          .build();
+    }
+
+    String thumbnailImageFileUrl = files.stream()
+        .filter(File::getThumbnail)
+        .findFirst()
+        .map(File::getFileUrl)
+        .orElse("null");
+
+    List<String> addImageFilesUrl = files.stream()
+        .filter(file -> !file.getThumbnail())
+        .filter(file -> file.getType().equals(FileType.IMAGE))
+        .map(File::getFileUrl)
+        .toList();
+
+    String presentationReportFileUrl = files.stream()
+        .filter(file -> file.getType().equals(FileType.PRESENTATION_REPORT))
+        .findFirst()
+        .map(File::getFileUrl)
+        .orElse("null");
+
+    String descriptionReportFileUrl = files.stream()
+        .filter(file -> file.getType().equals(FileType.DESCRIPTION_REPORT))
+        .findFirst()
+        .map(File::getFileUrl)
+        .orElse("null");
+
+    String projectZipFileUrl = files.stream()
+        .filter(file -> file.getType().equals(FileType.PROJECT_ZIP))
+        .findFirst()
+        .map(File::getFileUrl)
+        .orElse("null");
+
+    return ProjectDetailResponse.builder()
+        .projectId(projectId)
+        .title(project.getTitle())
+        .summary(project.getSummary())
+        .name(project.getUser().getName())
+        .createdAt(project.getCreatedAt())
+        .categoryName(category.getName())
+        .techStacks(techStacks)
+        .demoVideoUrl(project.getDemoVideoUrl())
+
+        .thumbnailImageFileUrl(thumbnailImageFileUrl)
+        .addImageFilesUrl(addImageFilesUrl)
+        .presentationReportFileUrl(presentationReportFileUrl)
+        .descriptionReportFileUrl(descriptionReportFileUrl)
+        .projectZipFileUrl(projectZipFileUrl)
+
+        .bookMarked(isBookMarked)
+        .mine(isMine)
         .build();
   }
 
