@@ -42,15 +42,33 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     String url = request.getRequestURI();
     String method = request.getMethod();
+    String token = jwtTokenProvider.getTokenFromRequest(request);
 
-    if(isPublicPath(url)) {
+    if (isPublicPath(url)) {
       log.info("[" + request.getRemoteAddr() + "]:"
           + "[" + method + ":" + url + "](allowed)");
+
+      // 토큰이 있으면 인증 정보 세팅 (실패해도 그냥 통과)
+      if (token != null) {
+        try {
+          jwtTokenProvider.validateToken(token);
+          String userUuid = jwtTokenProvider.getUserUuidFromToken(token);
+
+          if (userRepository.findByUuid(userUuid).isPresent()
+              || jwtTokenProvider.getRoleFromToken(token) == UserRole.GUEST) {
+
+            UsernamePasswordAuthenticationToken authentication = getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+          }
+        } catch (Exception e) {
+          // Public path에서 토큰 검증 실패는 무시하고 통과
+          log.info("Public path - invalid token, proceeding as anonymous");
+        }
+      }
 
       filterChain.doFilter(request, response);
       return;
     }
-    String token = jwtTokenProvider.getTokenFromRequest(request);
 
     if(token != null) {
       try {

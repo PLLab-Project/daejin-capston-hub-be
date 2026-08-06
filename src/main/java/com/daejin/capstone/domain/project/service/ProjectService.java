@@ -1,5 +1,6 @@
 package com.daejin.capstone.domain.project.service;
 
+import com.daejin.capstone.domain.bookmark.repository.BookMarkRepository;
 import com.daejin.capstone.domain.category.exception.CategoryNotFoundException;
 import com.daejin.capstone.domain.category.entity.Category;
 import com.daejin.capstone.domain.category.repository.CategoryRepository;
@@ -37,6 +38,7 @@ public class ProjectService {
   private final ProjectRepository projectRepository;
   private final CategoryRepository categoryRepository;
   private final TechStackRepository techStackRepository;
+  private final BookMarkRepository bookMarkRepository;
 
   private final FileStorage fileStorage;
   private final FileRepository fileRepository;
@@ -103,7 +105,13 @@ public class ProjectService {
 
   @Transactional
   public Page<ProjectPreviewResponse> searchProject(
-      Pageable pageable, ProjectSearchCondition condition) {
+      Pageable pageable, ProjectSearchCondition condition, String uuid) {
+    System.out.println("uuid = " + uuid);
+
+    User user = (uuid != null)
+        ? userRepository.findByUuid(uuid).orElseThrow(
+        () -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND))
+        : null;
 
     Sort sort = Sort.by(
         condition.getDirection(),
@@ -118,16 +126,22 @@ public class ProjectService {
 
     Page<Project> projects = projectRepository.search(condition, sortedPageable);
 
-    return projects.map(this::toPreviewResponse);
+    return projects.map(project -> toPreviewResponse(project, user));
   }
 
-  private ProjectPreviewResponse toPreviewResponse(Project project) {
+  private ProjectPreviewResponse toPreviewResponse(Project project, User user) {
+
+    boolean isBookMarked = user == null ? false : bookMarkRepository.existsByUserAndProject(user, project);
 
     String thumbnailUrl = project.getFiles().stream()
         .filter(file -> file.getThumbnail())
         .findFirst()
         .map(File::getFileUrl)
         .orElse(null);
+
+
+
+
 
     return ProjectPreviewResponse.builder()
         .projectId(project.getId())
@@ -136,6 +150,7 @@ public class ProjectService {
         .summary(project.getSummary())
         .uploadUserName(project.getUser().getName())
         .createdAt(project.getCreatedAt().toString())
+        .isBookmarked(isBookMarked)
         .build();
   }
 

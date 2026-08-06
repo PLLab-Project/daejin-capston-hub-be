@@ -60,11 +60,15 @@ public class ProjectController {
       @Parameter(description = "페이지 번호 (0부터 시작)", example = "0")
       @RequestParam(defaultValue = "0") int page,
       @Parameter(description = "페이지 크기", example = "8")
-      @RequestParam(defaultValue = "8") int size
+      @RequestParam(defaultValue = "8") int size,
+      @AuthenticationPrincipal CustomUserDetails userDetails
   ) {
+
+    String uuid = (userDetails != null) ? userDetails.getUuid() : null;
+
     Pageable pageable = PageRequest.of(page, size);
     Page<ProjectPreviewResponse> projectPreviewResponses =
-        projectService.searchProject(pageable, condition);
+        projectService.searchProject(pageable, condition, uuid);
     return ResponseDTO.of(
         PageResponse.from(projectPreviewResponses),
         "작품 목록 조회에 성공하였습니다."

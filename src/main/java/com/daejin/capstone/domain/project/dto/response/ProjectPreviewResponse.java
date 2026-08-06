@@ -19,5 +19,6 @@ public class ProjectPreviewResponse {
   private String summary;
   private String uploadUserName;
   private String createdAt;
+  private boolean isBookmarked;
 
 }
