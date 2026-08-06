@@ -1,7 +1,6 @@
 package com.daejin.capstone.domain.notice.batch;
 
 import com.daejin.capstone.domain.notice.dto.NoticeBatchDto;
-import com.daejin.capstone.domain.notice.service.NoticeService;
 import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.Year;

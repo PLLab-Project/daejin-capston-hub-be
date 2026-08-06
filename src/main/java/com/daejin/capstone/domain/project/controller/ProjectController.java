@@ -1,7 +1,6 @@
 package com.daejin.capstone.domain.project.controller;
 
 import com.daejin.capstone.domain.project.dto.ProjectSearchCondition;
-import com.daejin.capstone.domain.notice.dto.response.NoticePreviewResponse;
 import com.daejin.capstone.domain.project.dto.request.RegisterProjectRequest;
 import com.daejin.capstone.domain.project.dto.response.ProjectPreviewResponse;
 import com.daejin.capstone.domain.project.dto.response.RegisterProjectResponse;
@@ -18,11 +17,9 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -35,7 +32,7 @@ public class ProjectController {
 
   private final ProjectService projectService;
 
-  @Tag(name = "작품등록")
+  @Tag(name = "작품")
   @Operation(summary = "작품 등록에 사용하는 API 입니다. MULTIPART_FORM_DATA 형식으로 요청해야합니다. 등록이 완료되면 ID 가 반환됩니다.")
   @PostMapping(value = "/home/project", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseDTO<?> registerProject(
@@ -55,8 +52,8 @@ public class ProjectController {
 
   }
 
-  @Tag(name = "작품검색")
-  @Operation(summary = "작품 검색에 사용되는 API 입니다. 연도, 분야, 정렬 기준 검색이 가능합니다.")
+  @Tag(name = "작품")
+  @Operation(summary = "작품 검색에 사용하는 API 입니다. 연도, 분야, 정렬 기준 검색이 가능합니다.")
   @GetMapping("/home/project/search")
   public ResponseDTO<PageResponse<ProjectPreviewResponse>> searchProject(
       @ParameterObject ProjectSearchCondition condition,
@@ -70,7 +67,7 @@ public class ProjectController {
         projectService.searchProject(pageable, condition);
     return ResponseDTO.of(
         PageResponse.from(projectPreviewResponses),
-        "프로젝트 목록 조회에 성공하였습니다."
+        "작품 목록 조회에 성공하였습니다."
     );
   }
 

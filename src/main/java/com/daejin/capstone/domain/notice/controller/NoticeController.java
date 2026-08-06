@@ -1,8 +1,6 @@
 package com.daejin.capstone.domain.notice.controller;
 
-import com.daejin.capstone.domain.notice.batch.NoticeBatch;
 import com.daejin.capstone.domain.notice.docs.NoticeControllerDocs;
-import com.daejin.capstone.domain.notice.dto.NoticeBatchDto;
 import com.daejin.capstone.domain.notice.dto.request.RegisterNoticeRequest;
 import com.daejin.capstone.domain.notice.dto.response.NoticeDetailResponse;
 import com.daejin.capstone.domain.notice.dto.response.NoticePreviewResponse;
@@ -13,11 +11,9 @@ import com.daejin.capstone.global.security.core.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;

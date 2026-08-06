@@ -7,13 +7,8 @@ import com.daejin.capstone.global.common.response.ResponseDTO;
 import com.daejin.capstone.global.dto.PageResponse;
 import com.daejin.capstone.global.security.core.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import org.apache.coyote.Response;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface NoticeControllerDocs {
