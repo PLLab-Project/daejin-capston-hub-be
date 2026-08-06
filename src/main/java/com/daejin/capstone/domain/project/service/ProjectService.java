@@ -6,7 +6,9 @@ import com.daejin.capstone.domain.category.repository.CategoryRepository;
 import com.daejin.capstone.domain.file.entity.File;
 import com.daejin.capstone.domain.file.entity.FileType;
 import com.daejin.capstone.domain.file.repository.FileRepository;
+import com.daejin.capstone.domain.project.dto.ProjectSearchCondition;
 import com.daejin.capstone.domain.project.dto.request.RegisterProjectRequest;
+import com.daejin.capstone.domain.project.dto.response.ProjectPreviewResponse;
 import com.daejin.capstone.domain.project.dto.response.RegisterProjectResponse;
 import com.daejin.capstone.domain.project.entity.Project;
 import com.daejin.capstone.domain.project.repository.ProjectRepository;
@@ -19,6 +21,10 @@ import com.daejin.capstone.global.exception.ErrorCode;
 import com.daejin.capstone.global.exception.UserNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -93,6 +99,44 @@ public class ProjectService {
         .projectId(project.getId())
         .build();
 
+  }
+
+  @Transactional
+  public Page<ProjectPreviewResponse> searchProject(
+      Pageable pageable, ProjectSearchCondition condition) {
+
+    Sort sort = Sort.by(
+        condition.getDirection(),
+        condition.getSortType().getProperty()
+    );
+
+    Pageable sortedPageable = PageRequest.of(
+        pageable.getPageNumber(),
+        pageable.getPageSize(),
+        sort
+    );
+
+    Page<Project> projects = projectRepository.search(condition, sortedPageable);
+
+    return projects.map(this::toPreviewResponse);
+  }
+
+  private ProjectPreviewResponse toPreviewResponse(Project project) {
+
+    String thumbnailUrl = project.getFiles().stream()
+        .filter(file -> file.getThumbnail())
+        .findFirst()
+        .map(File::getFileUrl)
+        .orElse(null);
+
+    return ProjectPreviewResponse.builder()
+        .projectId(project.getId())
+        .thumbnailUrl(thumbnailUrl)
+        .title(project.getTitle())
+        .summary(project.getSummary())
+        .uploadUserName(project.getUser().getName())
+        .createdAt(project.getCreatedAt().toString())
+        .build();
   }
 
 }

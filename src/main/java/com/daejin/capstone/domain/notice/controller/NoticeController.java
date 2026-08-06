@@ -10,10 +10,12 @@ import com.daejin.capstone.domain.notice.service.NoticeService;
 import com.daejin.capstone.global.common.response.ResponseDTO;
 import com.daejin.capstone.global.dto.PageResponse;
 import com.daejin.capstone.global.security.core.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
@@ -21,6 +23,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,10 +37,20 @@ public class NoticeController implements NoticeControllerDocs {
   @Override
   @GetMapping("/home/notice/preview")
   public ResponseDTO<PageResponse<NoticePreviewResponse>> getNoticePreview(
-      @PageableDefault(size = 10) Pageable pageable) {
-
-    Page<NoticePreviewResponse> noticePreviewResponses = noticeService.getNoticePreview(pageable);
-    return ResponseDTO.of(PageResponse.from(noticePreviewResponses), "공지사항 목록 조회에 성공하였습니다.");
+      @Parameter(description = "제목으로 검색", example = "테스트")
+      @RequestParam(defaultValue = "") String keyword,
+      @Parameter(description = "페이지 번호 (0부터 시작)", example = "0")
+      @RequestParam(defaultValue = "0") int page,
+      @Parameter(description = "페이지 크기", example = "10")
+      @RequestParam(defaultValue = "10") int size
+  ) {
+    Pageable pageable = PageRequest.of(page, size);
+    Page<NoticePreviewResponse> noticePreviewResponses =
+        noticeService.getNoticePreview(pageable, keyword);
+    return ResponseDTO.of(
+        PageResponse.from(noticePreviewResponses),
+        "공지사항 목록 조회에 성공하였습니다."
+    );
   }
 
   @Override

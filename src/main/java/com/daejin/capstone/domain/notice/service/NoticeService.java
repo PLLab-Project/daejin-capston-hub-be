@@ -55,7 +55,7 @@ public class NoticeService {
 
   private final FileStorage fileStorage;
 
-  public Page<NoticePreviewResponse> getNoticePreview(Pageable pageable) {
+  public Page<NoticePreviewResponse> getNoticePreview(Pageable pageable, String keyword) {
     List<NoticeBatchDto> noticeBatchDtos = noticeBatch.get();
 
     // 대진대 공지사항글
@@ -74,21 +74,21 @@ public class NoticeService {
         .toList();
 
 
-    //서비스 공지사항 글
-    List<NoticePreviewResponse> serviceNoticePreviewResponses = noticeRepository.findAll()
-        .stream()
-        .map(notice -> {
-          NoticePreviewResponse noticePreviewResponse = NoticePreviewResponse
-              .builder()
-              .noticeId(notice.getId())
-              .title(notice.getTitle())
-              .link(null)
-              .createdAt(notice.getCreatedAt())
-              .noticeType(NoticeType.SERVICE)
-              .hasFile(!notice.getFiles().isEmpty())
-              .build();
-          return noticePreviewResponse;
-        })
+    // 서비스 공지사항 글
+    List<Notice> serviceNotices = (keyword == null || keyword.isBlank())
+        ? noticeRepository.findAll()
+        : noticeRepository.findByTitleContainingIgnoreCase(keyword);
+
+    List<NoticePreviewResponse> serviceNoticePreviewResponses = serviceNotices.stream()
+        .map(notice -> NoticePreviewResponse
+            .builder()
+            .noticeId(notice.getId())
+            .title(notice.getTitle())
+            .link(null)
+            .createdAt(notice.getCreatedAt())
+            .noticeType(NoticeType.SERVICE)
+            .hasFile(!notice.getFiles().isEmpty())
+            .build())
         .sorted(Comparator.comparing(NoticePreviewResponse::getCreatedAt).reversed())
         .toList();
 

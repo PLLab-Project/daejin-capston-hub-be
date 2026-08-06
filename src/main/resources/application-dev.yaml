@@ -26,3 +26,4 @@ jwt:
 file:
   upload-path: ${FILE_DEV_UPLOAD_PATH}
 
+

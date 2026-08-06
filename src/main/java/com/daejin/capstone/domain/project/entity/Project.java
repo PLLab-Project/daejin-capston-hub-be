@@ -4,6 +4,7 @@ import com.daejin.capstone.domain.category.entity.Category;
 import com.daejin.capstone.domain.file.entity.File;
 import com.daejin.capstone.domain.techstack.entity.TechStack;
 import com.daejin.capstone.domain.user.entity.User;
+import com.daejin.capstone.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Project  {
+public class Project extends BaseEntity {
 
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;

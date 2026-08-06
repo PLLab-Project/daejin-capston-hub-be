@@ -1,18 +1,30 @@
 package com.daejin.capstone.domain.project.controller;
 
+import com.daejin.capstone.domain.project.dto.ProjectSearchCondition;
+import com.daejin.capstone.domain.notice.dto.response.NoticePreviewResponse;
 import com.daejin.capstone.domain.project.dto.request.RegisterProjectRequest;
+import com.daejin.capstone.domain.project.dto.response.ProjectPreviewResponse;
 import com.daejin.capstone.domain.project.dto.response.RegisterProjectResponse;
 import com.daejin.capstone.domain.project.service.ProjectService;
 import com.daejin.capstone.global.common.response.ResponseDTO;
+import com.daejin.capstone.global.dto.PageResponse;
 import com.daejin.capstone.global.security.core.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,6 +55,24 @@ public class ProjectController {
 
   }
 
+  @Tag(name = "작품검색")
+  @Operation(summary = "작품 검색에 사용되는 API 입니다. 연도, 분야, 정렬 기준 검색이 가능합니다.")
+  @GetMapping("/home/project/search")
+  public ResponseDTO<PageResponse<ProjectPreviewResponse>> searchProject(
+      @ParameterObject ProjectSearchCondition condition,
+      @Parameter(description = "페이지 번호 (0부터 시작)", example = "0")
+      @RequestParam(defaultValue = "0") int page,
+      @Parameter(description = "페이지 크기", example = "8")
+      @RequestParam(defaultValue = "8") int size
+  ) {
+    Pageable pageable = PageRequest.of(page, size);
+    Page<ProjectPreviewResponse> projectPreviewResponses =
+        projectService.searchProject(pageable, condition);
+    return ResponseDTO.of(
+        PageResponse.from(projectPreviewResponses),
+        "프로젝트 목록 조회에 성공하였습니다."
+    );
+  }
 
 
 }

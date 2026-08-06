@@ -45,7 +45,8 @@ public class SecurityConfig {
                 "/login/**",
                 "/auth/login",
                 "/home/notice/**",
-                "/files/**"
+                "/files/**",
+                "/home/project/search"
             ).permitAll()
             .requestMatchers(
                 "/admin/**"
