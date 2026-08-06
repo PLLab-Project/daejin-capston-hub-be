@@ -20,11 +20,11 @@ public interface NoticeControllerDocs {
 
 
   @Tag(name = "공지사항")
-  @Operation(summary = "공지사항 preview 조회 API 입니다. id 값이 null인 것은 대진대 공지사항 글 입니다.")
+  @Operation(summary = "공지사항 검색 API 입니다. id 값이 null인 것은 대진대 공지사항 글 입니다.")
   ResponseDTO<PageResponse<NoticePreviewResponse>> getNoticePreview(String keyword, int page, int size);
 
   @Tag(name = "공지사항")
-  @Operation(summary = "공지사항 detail 조회 API 입니다. 공지글 Id값을 통해 자세한 내용을 조회합니다.")
+  @Operation(summary = "공지사항 상세조회 API 입니다. 공지글 Id값을 통해 자세한 내용을 조회합니다.")
   ResponseDTO<NoticeDetailResponse> getNoticeDetail(Long id);
 
   @Tag(name = "공지등록")

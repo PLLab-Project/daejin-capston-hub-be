@@ -35,7 +35,7 @@ public class NoticeController implements NoticeControllerDocs {
   private final NoticeService noticeService;
 
   @Override
-  @GetMapping("/home/notice/preview")
+  @GetMapping("/home/notice/search")
   public ResponseDTO<PageResponse<NoticePreviewResponse>> getNoticePreview(
       @Parameter(description = "제목으로 검색", example = "테스트")
       @RequestParam(defaultValue = "") String keyword,
