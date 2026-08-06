@@ -9,10 +9,12 @@ import com.daejin.capstone.domain.file.entity.FileType;
 import com.daejin.capstone.domain.file.repository.FileRepository;
 import com.daejin.capstone.domain.project.dto.ProjectSearchCondition;
 import com.daejin.capstone.domain.project.dto.request.RegisterProjectRequest;
+import com.daejin.capstone.domain.project.dto.response.ProjectAdminPreviewResponse;
 import com.daejin.capstone.domain.project.dto.response.ProjectDetailResponse;
 import com.daejin.capstone.domain.project.dto.response.ProjectPreviewResponse;
 import com.daejin.capstone.domain.project.dto.response.RegisterProjectResponse;
 import com.daejin.capstone.domain.project.entity.Project;
+import com.daejin.capstone.domain.project.entity.ProjectStatus;
 import com.daejin.capstone.domain.project.exception.ProjectNotFoundException;
 import com.daejin.capstone.domain.project.repository.ProjectRepository;
 import com.daejin.capstone.domain.techstack.entity.TechStack;
@@ -247,6 +249,31 @@ public class ProjectService {
         .bookMarked(isBookMarked)
         .mine(isMine)
         .build();
+  }
+
+  @Transactional
+  public List<ProjectAdminPreviewResponse> getProjectAdminProject(String keyword) {
+
+    if(keyword == null || keyword.isBlank()) {
+      List<ProjectAdminPreviewResponse> responses = projectRepository.findByProjectStatus(ProjectStatus.PENDING).stream()
+          .map(project -> ProjectAdminPreviewResponse.builder()
+              .projectId(project.getId())
+              .title(project.getTitle())
+              .createdAt(project.getCreatedAt())
+              .build()).toList();
+
+      return responses;
+    }
+
+    List<ProjectAdminPreviewResponse> responses = projectRepository.findByProjectStatusAndTitleContainingIgnoreCase(ProjectStatus.PENDING, keyword).stream()
+        .map(project -> ProjectAdminPreviewResponse.builder()
+            .projectId(project.getId())
+            .title(project.getTitle())
+            .createdAt(project.getCreatedAt())
+            .build()).toList();
+
+    return responses;
+
   }
 
 }

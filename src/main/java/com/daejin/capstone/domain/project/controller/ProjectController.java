@@ -2,6 +2,7 @@ package com.daejin.capstone.domain.project.controller;
 
 import com.daejin.capstone.domain.project.dto.ProjectSearchCondition;
 import com.daejin.capstone.domain.project.dto.request.RegisterProjectRequest;
+import com.daejin.capstone.domain.project.dto.response.ProjectAdminPreviewResponse;
 import com.daejin.capstone.domain.project.dto.response.ProjectDetailResponse;
 import com.daejin.capstone.domain.project.dto.response.ProjectPreviewResponse;
 import com.daejin.capstone.domain.project.dto.response.RegisterProjectResponse;
@@ -90,6 +91,18 @@ public class ProjectController {
     ProjectDetailResponse response = projectService.getProjectDetail(projectId, uuid);
     return ResponseDTO.of(response, "조회에 성공하였습니다.");
   }
+
+  @Tag(name = "작품관리")
+  @Operation(summary = "승인/반려 가 필요한 작품 목록을 조회합니다.")
+  @GetMapping("/admin/project")
+  public ResponseDTO<List<ProjectAdminPreviewResponse>> getProjectAdminProject(
+      @Parameter(description = "제목으로 검색합니다.", example = "테스트")
+      @RequestParam(required = false) String keyword) {
+    List<ProjectAdminPreviewResponse> response = projectService.getProjectAdminProject(keyword);
+    return ResponseDTO.of(response, "조회에 성공하였습니다.");
+  }
+
+
 
 
 }
