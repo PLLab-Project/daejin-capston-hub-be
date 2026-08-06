@@ -18,6 +18,7 @@ public class ProjectDetailResponse {
   private Long projectId;
   private String title;
   private String summary;
+  private String description;
   private String name;
   private LocalDateTime createdAt;
   private String categoryName;
