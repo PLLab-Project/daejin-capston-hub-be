@@ -7,6 +7,8 @@ import com.daejin.capstone.domain.user.entity.User;
 import com.daejin.capstone.global.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -50,6 +52,10 @@ public class Project extends BaseEntity {
   @Column(length = 255)
   private String demoVideoUrl;
 
+  @Column(length = 10)
+  @Enumerated(EnumType.STRING)
+  private ProjectStatus projectStatus;
+
 
   @OneToMany(mappedBy = "project")
   private List<TechStack> techStacks = new ArrayList<>();
@@ -59,7 +65,7 @@ public class Project extends BaseEntity {
 
   @Builder
   private Project(Long id, User user, Category category, String title,
-      String summary, String demoVideoUrl, String description) {
+      String summary, String demoVideoUrl, String description, ProjectStatus projectStatus) {
     this.id = id;
     this.user = user;
     this.category = category;
@@ -67,6 +73,7 @@ public class Project extends BaseEntity {
     this.summary = summary;
     this.demoVideoUrl = demoVideoUrl;
     this.description = description;
+    this.projectStatus = projectStatus;
   }
 
   public static Project of(User user, Category category, String title, String summary,
@@ -79,6 +86,7 @@ public class Project extends BaseEntity {
         .summary(summary)
         .demoVideoUrl(demoVideoUrl)
         .description(description)
+        .projectStatus(ProjectStatus.PENDING)
         .build();
   }
 }

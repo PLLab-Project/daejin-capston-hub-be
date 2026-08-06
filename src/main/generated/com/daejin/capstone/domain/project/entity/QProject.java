@@ -37,6 +37,8 @@ public class QProject extends EntityPathBase<Project> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final EnumPath<ProjectStatus> projectStatus = createEnum("projectStatus", ProjectStatus.class);
+
     public final StringPath summary = createString("summary");
 
     public final ListPath<com.daejin.capstone.domain.techstack.entity.TechStack, com.daejin.capstone.domain.techstack.entity.QTechStack> techStacks = this.<com.daejin.capstone.domain.techstack.entity.TechStack, com.daejin.capstone.domain.techstack.entity.QTechStack>createList("techStacks", com.daejin.capstone.domain.techstack.entity.TechStack.class, com.daejin.capstone.domain.techstack.entity.QTechStack.class, PathInits.DIRECT2);

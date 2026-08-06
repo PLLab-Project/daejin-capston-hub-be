@@ -2,6 +2,7 @@ package com.daejin.capstone.domain.project.repository;
 
 import com.daejin.capstone.domain.project.dto.ProjectSearchCondition;
 import com.daejin.capstone.domain.project.entity.Project;
+import com.daejin.capstone.domain.project.entity.ProjectStatus;
 import com.daejin.capstone.domain.project.entity.QProject;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -27,6 +28,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
     List<Project> content = queryFactory
         .selectFrom(project)
         .where(
+            projectStatusApproved(),
             keywordContains(condition.getKeyword()),
             yearEq(condition.getYear()),
             categoryIn(condition.getCategoryIds())
@@ -60,6 +62,10 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
     } catch (NumberFormatException e) {
       return null;
     }
+  }
+
+  private BooleanExpression projectStatusApproved() {
+    return QProject.project.projectStatus.eq(ProjectStatus.APPROVED);
   }
 
   private BooleanExpression categoryIn(List<Long> fieldIds) {
