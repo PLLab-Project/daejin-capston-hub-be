@@ -242,7 +242,7 @@ public class SwaggerConfig {
   public GroupedOpenApi starApi() {
     return GroupedOpenApi.builder()
         .group("⭐ 즐겨찾기")
-        .pathsToMatch("/")
+        .pathsToMatch("/bookmark/**")
         .addOpenApiCustomizer(openApi -> openApi.info(new Info()
             .title("⭐ 즐겨찾기")
             .description(
