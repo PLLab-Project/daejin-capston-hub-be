@@ -1,7 +1,7 @@
-package com.daejin.capstone.domain.project.dto.response;
+package com.daejin.capstone.domain.project.dto.request;
 
 import com.daejin.capstone.domain.project.entity.ProjectStatus;
-import java.time.LocalDateTime;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,11 +13,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProjectAdminPreviewResponse {
+public class ProjectAdminReviewRequest {
 
-  private Long projectId;
-  private String title;
-  private LocalDateTime createdAt;
+  @Schema(
+      description = "심사 상태",
+      allowableValues = {"PENDING", "APPROVED", "REJECTED"},
+      example = "APPROVED"
+  )
   private ProjectStatus projectStatus;
 
 }

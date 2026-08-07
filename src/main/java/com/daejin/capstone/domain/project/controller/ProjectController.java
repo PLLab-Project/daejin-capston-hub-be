@@ -1,6 +1,7 @@
 package com.daejin.capstone.domain.project.controller;
 
 import com.daejin.capstone.domain.project.dto.ProjectSearchCondition;
+import com.daejin.capstone.domain.project.dto.request.ProjectAdminReviewRequest;
 import com.daejin.capstone.domain.project.dto.request.RegisterProjectRequest;
 import com.daejin.capstone.domain.project.dto.response.ProjectAdminPreviewResponse;
 import com.daejin.capstone.domain.project.dto.response.ProjectDetailResponse;
@@ -22,8 +23,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -92,14 +95,50 @@ public class ProjectController {
     return ResponseDTO.of(response, "조회에 성공하였습니다.");
   }
 
+  @Tag(name = "내 작품")
+  @Operation(summary = "내 작품 상세조회 API 입니다.")
+  @GetMapping("/my-project/detail/{projectId}")
+  public ResponseDTO<ProjectDetailResponse> getMyProjectDetail(
+      @AuthenticationPrincipal CustomUserDetails userDetails,
+      @PathVariable Long projectId
+  ) {
+
+    String uuid = (userDetails != null) ? userDetails.getUuid() : null;
+
+    ProjectDetailResponse response = projectService.getProjectDetail(projectId, uuid);
+    return ResponseDTO.of(response, "조회에 성공하였습니다.");
+  }
+
+  @Tag(name = "내 작품")
+  @Operation(summary = "내 작품 preview 조회 API 입니다. ")
+  @GetMapping("/my-project/preview")
+  public ResponseDTO<List<ProjectPreviewResponse>> getMyProjectPreview(
+      @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+    List<ProjectPreviewResponse> responses = projectService.getMyProjectPreview(userDetails.getUuid());
+    return ResponseDTO.of(responses, "조회에 성공하였습니다.");
+  }
+
   @Tag(name = "작품관리")
-  @Operation(summary = "승인/반려 가 필요한 작품 목록을 조회합니다.")
+  @Operation(summary = "승인/반려 가 필요한 작품 목록을 조회합니다. (PENDING: 대기, APPROVED: 승인됨, REJECTED: 반려됨)")
   @GetMapping("/admin/project")
   public ResponseDTO<List<ProjectAdminPreviewResponse>> getProjectAdminProject(
       @Parameter(description = "제목으로 검색합니다.", example = "테스트")
       @RequestParam(required = false) String keyword) {
     List<ProjectAdminPreviewResponse> response = projectService.getProjectAdminProject(keyword);
     return ResponseDTO.of(response, "조회에 성공하였습니다.");
+  }
+
+  @Tag(name = "작품 승인/반려")
+  @Operation(summary = "특정 작품을 승인/반려 시키는 API 입니다. (PENDING: 대기, APPROVED: 승인됨, REJECTED: 반려됨)")
+  @PatchMapping("/admin/project/review/{projectId}")
+  public ResponseDTO<?> projectAdminReview(@PathVariable Long projectId,
+      @AuthenticationPrincipal CustomUserDetails userDetails,
+      @RequestBody ProjectAdminReviewRequest request) {
+
+    projectService.projectAdminReview(projectId, request, userDetails.getUuid());
+
+    return ResponseDTO.of("호출이 완료되었습니다.");
   }
 
 

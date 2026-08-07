@@ -218,7 +218,7 @@ public class SwaggerConfig {
   public GroupedOpenApi myprojectApi() {
     return GroupedOpenApi.builder()
         .group("🎨 내 작품")
-        .pathsToMatch("/")
+        .pathsToMatch("/my-project/**")
         .addOpenApiCustomizer(openApi -> openApi.info(new Info()
             .title("🎨 내 작품")
             .description(

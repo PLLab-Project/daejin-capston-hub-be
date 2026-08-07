@@ -76,6 +76,10 @@ public class Project extends BaseEntity {
     this.projectStatus = projectStatus;
   }
 
+  public void updateProjectStatus (ProjectStatus projectStatus) {
+    this.projectStatus = projectStatus;
+  }
+
   public static Project of(User user, Category category, String title, String summary,
       String demoVideoUrl, String description) {
     return Project.builder()

@@ -7,7 +7,9 @@ import com.daejin.capstone.domain.category.repository.CategoryRepository;
 import com.daejin.capstone.domain.file.entity.File;
 import com.daejin.capstone.domain.file.entity.FileType;
 import com.daejin.capstone.domain.file.repository.FileRepository;
+import com.daejin.capstone.domain.notice.exception.PostNotFoundException;
 import com.daejin.capstone.domain.project.dto.ProjectSearchCondition;
+import com.daejin.capstone.domain.project.dto.request.ProjectAdminReviewRequest;
 import com.daejin.capstone.domain.project.dto.request.RegisterProjectRequest;
 import com.daejin.capstone.domain.project.dto.response.ProjectAdminPreviewResponse;
 import com.daejin.capstone.domain.project.dto.response.ProjectDetailResponse;
@@ -143,10 +145,6 @@ public class ProjectService {
         .map(File::getFileUrl)
         .orElse(null);
 
-
-
-
-
     return ProjectPreviewResponse.builder()
         .projectId(project.getId())
         .thumbnailUrl(thumbnailUrl)
@@ -155,6 +153,7 @@ public class ProjectService {
         .uploadUserName(project.getUser().getName())
         .createdAt(project.getCreatedAt().toString())
         .isBookmarked(isBookMarked)
+        .projectStatus(project.getProjectStatus())
         .build();
   }
 
@@ -260,6 +259,7 @@ public class ProjectService {
               .projectId(project.getId())
               .title(project.getTitle())
               .createdAt(project.getCreatedAt())
+              .projectStatus(project.getProjectStatus())
               .build()).toList();
 
       return responses;
@@ -274,6 +274,35 @@ public class ProjectService {
 
     return responses;
 
+  }
+
+  @Transactional
+  public List<ProjectPreviewResponse> getMyProjectPreview(String uuid) {
+
+    User user = userRepository.findByUuid(uuid).orElseThrow(
+        () -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND)
+    );
+
+    List<Project> projects = projectRepository.findALlByUser(user);
+
+    return projects.stream()
+        .map(project -> toPreviewResponse(project, user))
+        .toList();
+  }
+
+  @Transactional
+  public void projectAdminReview(Long id, ProjectAdminReviewRequest request, String uuid) {
+    User user = userRepository.findByUuid(uuid).orElseThrow(
+        () -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND)
+    );
+
+    Project project = projectRepository.findById(id).orElseThrow(
+        () -> new PostNotFoundException(ErrorCode.POST_NOT_FOUND)
+    );
+
+    ProjectStatus modifyProjectStatus = request.getProjectStatus();
+
+    project.updateProjectStatus(modifyProjectStatus);
   }
 
 }

@@ -1,5 +1,6 @@
 package com.daejin.capstone.domain.project.dto.response;
 
+import com.daejin.capstone.domain.project.entity.ProjectStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,5 +21,6 @@ public class ProjectPreviewResponse {
   private String uploadUserName;
   private String createdAt;
   private boolean isBookmarked;
+  private ProjectStatus projectStatus;
 
 }
