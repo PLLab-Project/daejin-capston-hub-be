@@ -194,7 +194,7 @@ public class SwaggerConfig {
   public GroupedOpenApi mypageApi() {
     return GroupedOpenApi.builder()
         .group("👤 마이페이지")
-        .pathsToMatch("/")
+        .pathsToMatch("/mypage/**")
         .addOpenApiCustomizer(openApi -> openApi.info(new Info()
             .title("👤 마이페이지")
             .description(

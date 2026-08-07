@@ -12,9 +12,11 @@ import jakarta.persistence.ManyToOne;
 import java.awt.print.Book;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Bookmark {
 
