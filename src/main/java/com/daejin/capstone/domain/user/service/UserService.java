@@ -4,6 +4,7 @@ import com.daejin.capstone.domain.bookmark.entity.Bookmark;
 import com.daejin.capstone.domain.bookmark.repository.BookMarkRepository;
 import com.daejin.capstone.domain.project.entity.Project;
 import com.daejin.capstone.domain.project.repository.ProjectRepository;
+import com.daejin.capstone.domain.user.dto.request.UserProfileModifyRequest;
 import com.daejin.capstone.domain.user.dto.response.MypageProjectResponse;
 import com.daejin.capstone.domain.user.dto.response.MypageResponse;
 import com.daejin.capstone.domain.user.entity.User;
@@ -13,6 +14,7 @@ import com.daejin.capstone.global.exception.UserNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +52,16 @@ public class UserService {
         ).build();
 
     return response;
+  }
+
+  @Transactional
+  public void modifyProfile(UserProfileModifyRequest userProfileModifyRequest, String uuid) {
+    User user = userRepository.findByUuid(uuid).orElseThrow(
+        () -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND)
+    );
+
+    user.updateEmail(userProfileModifyRequest.getEmail());
+    user.updateName(userProfileModifyRequest.getName());
   }
 
 }

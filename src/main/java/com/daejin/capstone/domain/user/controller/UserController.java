@@ -1,5 +1,6 @@
 package com.daejin.capstone.domain.user.controller;
 
+import com.daejin.capstone.domain.user.dto.request.UserProfileModifyRequest;
 import com.daejin.capstone.domain.user.dto.response.MypageResponse;
 import com.daejin.capstone.domain.user.service.UserService;
 import com.daejin.capstone.global.common.response.ResponseDTO;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,6 +30,17 @@ public class UserController {
 
     return ResponseDTO.of(mypageResponse, "내정보 조회에 성공하였습니다.");
 
+  }
+
+  @Tag(name = "마이페이지")
+  @Operation(summary = "내 정보를 수정합니다.")
+  @PatchMapping("/mypage/profile")
+  public ResponseDTO<?> modifyProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
+      @RequestBody UserProfileModifyRequest userProfileModifyRequest) {
+
+    userService.modifyProfile(userProfileModifyRequest, userDetails.getUuid());
+
+    return ResponseDTO.of("내 정보 수정에 성공하였습니다.");
   }
 
 }
